@@ -114,7 +114,7 @@ export default function MerchantPricesPage() {
       const res = await fetch('/api/merchant/prices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prices.filter(p => p.context === 'bullion')),
+        body: JSON.stringify(prices),
       });
       if (!res.ok) throw new Error('Failed to save changes');
       setSuccess('¡Precios actualizados con éxito!');
@@ -141,7 +141,7 @@ export default function MerchantPricesPage() {
             <table className="min-w-full">
               <thead className="bg-gray-50"><tr><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metal</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pureza</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compra €/g</th></tr></thead>
               <tbody className="divide-y divide-gray-200">
-                {scrapPrices.map(item => (<tr key={item.id}><td className="px-4 py-3 text-sm font-medium text-gray-900">{item.metal}</td><td className="px-4 py-3 text-sm text-gray-500">{item.purity}</td><td className="px-4 py-3"><input type="number" value={item.price_eur} disabled className="w-28 rounded-lg border-gray-200 bg-gray-100 px-2 py-1" /></td></tr>))}
+                {scrapPrices.map(item => (<tr key={item.id}><td className="px-4 py-3 text-sm font-medium text-gray-900">{item.metal}</td><td className="px-4 py-3 text-sm text-gray-500">{item.purity}</td><td className="px-4 py-3"><input type="number" value={item.price_eur} onChange={e => handlePriceChange(item.id, e.target.value, 'buy')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td></tr>))}
               </tbody>
             </table>
           </div>
@@ -153,7 +153,8 @@ export default function MerchantPricesPage() {
               <thead className="bg-gray-50"><tr><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compra €/ud</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venta €/ud</th><th className="w-12 px-4 py-3"></th></tr></thead>
               <tbody className="divide-y divide-gray-200">
                 {bullionPriceGroups.map(([skuId, group]) => (
-                  <tr key={skuId}>                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{group.sku}</td>
+                  <tr key={skuId}>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{group.sku}</td>
                     <td className="px-4 py-3"><input type="number" value={group.buy?.price_eur ?? ''} onChange={e => handlePriceChange(group.buy!.id, e.target.value, 'buy')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td>
                     <td className="px-4 py-3"><input type="number" value={group.sell?.price_eur ?? ''} onChange={e => handlePriceChange(group.sell!.id, e.target.value, 'sell')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td>
                     <td className="px-4 py-3"><button onClick={() => handleRemoveBullion(parseInt(skuId))} className="text-red-500 hover:text-red-700 font-bold">X</button></td>

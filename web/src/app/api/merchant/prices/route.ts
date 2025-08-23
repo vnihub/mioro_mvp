@@ -50,33 +50,44 @@ export async function POST(request: Request) {
 
   const client = await pool.connect();
   try {
-    const pricesToUpdate: { id: number | string; price_eur: number; side?: 'buy' | 'sell', is_new?: boolean, is_deleted?: boolean, bullion_sku_id?: number, metal_code?: string }[] = await request.json();
+    const pricesToUpdate: { id: number | string; price_eur: number; side?: 'buy' | 'sell', is_new?: boolean, is_deleted?: boolean, bullion_sku_id?: number, metal_code?: string, context?: 'scrap' | 'bullion' }[] = await request.json();
     if (!Array.isArray(pricesToUpdate)) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
 
     await client.query('BEGIN');
 
-    // For simplicity, we'll assume all prices belong to the merchant's first shop.
     const shopResult = await client.query('SELECT id FROM shops WHERE merchant_id = $1 ORDER BY id LIMIT 1', [session.merchant_id]);
     const shopId = shopResult.rows[0]?.id;
     if (!shopId) throw new Error('No shop found for merchant');
 
     for (const price of pricesToUpdate) {
-      if (price.is_deleted && typeof price.id === 'number') {
-        // Delete existing price entry
-        await client.query('DELETE FROM price_entries WHERE id = $1 AND shop_id = $2', [price.id, shopId]);
-      } else if (price.is_new) {
-        // Insert new bullion price entries (one for buy, one for sell)
-        await client.query(
-          `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price_eur)
-           VALUES ($1, $2, $3, 'bullion', 'buy', 'per_item', 0), ($1, $2, $3, 'bullion', 'sell', 'per_item', 0)`,
-          [shopId, price.metal_code, price.bullion_sku_id]
-        );
-      } else {
-        // Update existing price entry
+      if (price.context === 'scrap') {
+        // Update scrap prices
         const updateQuery = `UPDATE price_entries SET price_eur = $1 WHERE id = $2 AND shop_id = $3`;
         await client.query(updateQuery, [price.price_eur, price.id, shopId]);
+      } else if (price.context === 'bullion') {
+        if (price.is_deleted) {
+          // Delete existing bullion price entries
+          if (price.bullion_sku_id) {
+            await client.query('DELETE FROM price_entries WHERE bullion_sku_id = $1 AND shop_id = $2', [price.bullion_sku_id, shopId]);
+          }
+        } else if (price.is_new) {
+          // Insert new bullion price entries
+          if (price.bullion_sku_id && price.metal_code) {
+            await client.query(
+              `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price_eur)
+               VALUES ($1, $2, $3, 'bullion', 'buy', 'per_item', 0), 
+                      ($1, $2, $3, 'bullion', 'sell', 'per_item', 0)
+               ON CONFLICT (shop_id, bullion_sku_id, side) DO NOTHING`,
+              [shopId, price.metal_code, price.bullion_sku_id]
+            );
+          }
+        } else {
+          // Update existing bullion price entry
+          const updateQuery = `UPDATE price_entries SET price_eur = $1 WHERE id = $2 AND shop_id = $3`;
+          await client.query(updateQuery, [price.price_eur, price.id, shopId]);
+        }
       }
     }
 

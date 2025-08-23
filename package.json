@@ -1,19 +1,33 @@
 {
+  "name": "mioro-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev ./web",
+    "build": "next build ./web",
+    "start": "next start ./web",
+    "lint": "eslint ./web"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.1",
-    "pg": "^8.16.3"
+    "iron-session": "^8.0.4",
+    "next": "15.5.0",
+    "pg": "^8.16.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
-  "name": "mvp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd web && npm run dev"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/pg": "^8.15.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
 }
