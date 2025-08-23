@@ -15,7 +15,7 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
         <img src={shopData.logo_url || 'https://via.placeholder.com/150'} alt={`${shopData.name} logo`} className="w-24 h-24 rounded-full border" />
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{shopData.name}</h1>
-          <p className="text-gray-500 mt-1">Precios actualizados hace {new Date(shopData.last_price_update_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</p>
+          <p className="text-gray-500 mt-1">Precios actualizados hace {new Date(shopData.last_price_update_at).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</p>
           {shopData.verification_level === 'basic' && (
             <span className="mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs bg-green-100 text-green-800">
               Comercio verificado

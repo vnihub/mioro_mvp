@@ -8,7 +8,7 @@ This document outlines features, improvements, and refactorings to consider afte
 - **Benefit:** Easier translation management, scalable for global expansion.
 
 ## 2. Phone Number Validation
-- **Current State:** Basic presence check on backend. No format validation.
+- **Current State:** Basic presence check and format validation for Spanish numbers on both frontend and backend.
 - **Adaptation:** Implement robust phone number format validation on both frontend and backend, especially for international numbers.
 - **Benefit:** Improved data quality and user experience.
 
@@ -22,7 +22,7 @@ This document outlines features, improvements, and refactorings to consider afte
 - **Benefit:** Platform trust, security, and operational efficiency.
 
 ## 4. Bullion/Coin Search for Public Users
-- **Current State:** Merchants can manage bullion prices, but public users can only search for scrap metal.
+- **Current State:** Implemented. Public users can now search for bullion products by type and quantity.
 - **Adaptation:** Extend the public-facing calculator and search results to include bullion products.
 - **Benefit:** Completes a core feature, expands user utility.
 
