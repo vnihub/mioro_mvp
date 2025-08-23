@@ -11,6 +11,12 @@ function isValidSpanishPhoneNumber(phoneNumber: string | null | undefined): bool
   return /^(?:34)?[6789]\d{8}$/.test(cleanedNumber) || /^\+34[6789]\d{8}$/.test(phoneNumber);
 }
 
+function isValidEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return emailRegex.test(String(email).toLowerCase());
+}
+
 // GET handler to fetch profile data
 export async function GET(request: Request) {
   const session = await getSession();
@@ -20,7 +26,7 @@ export async function GET(request: Request) {
 
   try {
     const result = await pool.query(
-      'SELECT id, name, address_line, phone, whatsapp, logo_url FROM shops WHERE merchant_id = $1 ORDER BY id LIMIT 1',
+      'SELECT id, name, address_line, phone, whatsapp, logo_url, email FROM shops WHERE merchant_id = $1 ORDER BY id LIMIT 1',
       [session.merchant_id]
     );
     if (result.rows.length === 0) {
@@ -40,10 +46,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { id, address_line, phone, whatsapp } = await request.json(); // Expect 'id' instead of 'shop_id'
+    const { id, address_line, phone, whatsapp, email } = await request.json();
 
-    if (!id || !address_line || !phone) {
+    if (!id || !address_line || !phone || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: 'Invalid email format.' }, { status: 400 });
     }
 
     if (!isValidSpanishPhoneNumber(phone)) {
@@ -55,15 +65,16 @@ export async function POST(request: Request) {
 
     const updateQuery = `
       UPDATE shops
-      SET address_line = $1, phone = $2, whatsapp = $3
-      WHERE id = $4 AND merchant_id = $5;
+      SET address_line = $1, phone = $2, whatsapp = $3, email = $4
+      WHERE id = $5 AND merchant_id = $6;
     `;
     
     const result = await pool.query(updateQuery, [
       address_line,
       phone,
       whatsapp,
-      id, // Use 'id' here
+      email,
+      id,
       session.merchant_id
     ]);
 

@@ -35,6 +35,7 @@ CREATE TABLE shops (
     address_line TEXT NOT NULL,
     latitude DECIMAL(9, 6),
     longitude DECIMAL(9, 6),
+    email TEXT,
     phone TEXT,
     whatsapp TEXT,
     opening_hours JSONB,

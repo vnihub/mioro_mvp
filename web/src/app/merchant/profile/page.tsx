@@ -2,15 +2,46 @@
 
 import { useState, useEffect } from 'react';
 
+// --- INTERFACES ---
 interface ProfileData {
-  id: number; // Changed from shop_id to id
+  id: number;
   name: string;
   address_line: string;
   phone: string;
   whatsapp: string;
+  email: string;
   logo_url?: string;
 }
 
+// --- SKELETON COMPONENT ---
+const ProfileSkeleton = () => (
+  <div className="bg-white p-6 rounded-2xl shadow-md animate-pulse">
+    <div className="h-8 bg-gray-200 rounded-md w-1/3 mb-6"></div>
+    <div className="mb-8">
+      <div className="h-6 bg-gray-200 rounded-md w-1/4 mb-2"></div>
+      <div className="flex items-center gap-4">
+        <div className="w-24 h-24 rounded-full bg-gray-200"></div>
+        <div>
+          <div className="h-10 w-32 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+      <div className="h-4 bg-gray-200 rounded-md w-1/2 mt-2"></div>
+    </div>
+    <div className="space-y-4">
+      {[...Array(4)].map((_, i) => (
+        <div key={i}>
+          <div className="h-5 w-1/4 bg-gray-200 rounded-md mb-1"></div>
+          <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+        </div>
+      ))}
+      <div className="flex justify-end pt-4">
+        <div className="h-10 w-32 bg-gray-200 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+);
+
+// --- MAIN PAGE COMPONENT ---
 export default function MerchantProfilePage() {
   const [profile, setProfile] = useState<Partial<ProfileData>>({});
   const [loading, setLoading] = useState(true);
@@ -22,12 +53,12 @@ export default function MerchantProfilePage() {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/merchant/profile');
+        const res = await fetch('/api/merchant/profile', { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to load profile');
         const data = await res.json();
-        setProfile(data); // Data already contains 'id'
+        setProfile(data);
       } catch (err: any) {
-        setError(err.message);
+        setError('No se pudo cargar el perfil. Inténtalo de nuevo.');
       } finally {
         setLoading(false);
       }
@@ -57,7 +88,7 @@ export default function MerchantProfilePage() {
       }
       setSuccess('¡Perfil actualizado con éxito!');
     } catch (err: any) {
-      setError(err.message);
+      setError('No se pudo guardar el perfil. Revisa los datos.');
     } finally {
       setSaving(false);
     }
@@ -80,20 +111,21 @@ export default function MerchantProfilePage() {
         throw new Error(data.error || 'Logo upload failed');
       }
       const data = await res.json();
-      setProfile(prev => ({ ...prev, logo_url: data.logoUrl }));
+      setProfile(prev => ({ ...prev, logo_url: `${data.logoUrl}?t=${new Date().getTime()}` }));
       setSuccess('¡Logo actualizado con éxito!');
     } catch (err: any) {
-      setError(err.message);
+      setError('No se pudo subir el logo. Inténtalo de nuevo.');
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <p>Cargando perfil...</p>;
+  if (loading) return <ProfileSkeleton />;
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md">
       <h1 className="text-2xl font-bold font-display mb-6">Perfil de la Tienda</h1>
+      
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Logo de la Tienda</h2>
         <div className="flex items-center gap-4">
@@ -107,14 +139,19 @@ export default function MerchantProfilePage() {
         </div>
         <p className="text-xs text-gray-500 mt-2">Formatos aceptados: PNG, JPG, WEBP. Tamaño máx: 2MB.</p>
       </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="address_line" className="text-sm font-medium text-gray-700">Dirección <span className="text-red-500">*</span></label>
-          <input type="text" name="address_line" id="address_line" value={profile.address_line || ''} onChange={handleInputChange} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+          <input type="text" name="address_line" id="address_line" value={profile.address_line || ''} onChange={handleInputChange} required className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
         </div>
         <div>
           <label htmlFor="phone" className="text-sm font-medium text-gray-700">Número de Teléfono <span className="text-red-500">*</span></label>
-          <input type="tel" name="phone" id="phone" value={profile.phone || ''} onChange={handleInputChange} pattern="^(?:\+34)?[6789]\d{8}$" title="Por favor, introduce un número de teléfono español válido de 9 dígitos (ej. 612345678 o +34612345678)" className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+          <input type="tel" name="phone" id="phone" value={profile.phone || ''} onChange={handleInputChange} required pattern="^(?:\+34)?[6789]\d{8}$" title="Por favor, introduce un número de teléfono español válido de 9 dígitos (ej. 612345678 o +34612345678)" className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+        </div>
+        <div>
+          <label htmlFor="email" className="text-sm font-medium text-gray-700">Email de Contacto <span className="text-red-500">*</span></label>
+          <input type="email" name="email" id="email" value={profile.email || ''} onChange={handleInputChange} required className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
         </div>
         <div>
           <label htmlFor="whatsapp" className="text-sm font-medium text-gray-700">Número de WhatsApp (opcional)</label>
