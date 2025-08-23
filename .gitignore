@@ -1,0 +1,17 @@
+# Dependencies
+/node_modules
+/web/node_modules
+
+# Build output
+/web/.next
+
+# Environment variables
+.env
+web/.env
+
+# Docker data
+postgres_data/
+
+# System files
+.DS_Store
+context.md

@@ -1,0 +1,89 @@
+{
+  "Metadata": {
+    "title": "Mioro - Comparador de Precios de Metales Preciosos",
+    "description": "Encuentra los mejores precios para oro, plata y platino en tu ciudad."
+  },
+  "Topbar": {
+    "logoAlt": "Logo de Mioro"
+  },
+  "HomePage": {
+    "title": "Vende tu oro, plata y platino al mejor precio en tu ciudad",
+    "subtitle": "Compara precios de compra actualizados por comercios locales",
+    "cityLabel": "Ciudad",
+    "cityPlaceholder": "Selecciona una ciudad",
+    "metalLabel": "Metal",
+    "purityLabel": "Pureza",
+    "purityPlaceholder": "Selecciona pureza",
+    "weightLabel": "Peso (g)",
+    "weightPlaceholder": "Introduce el peso en gramos",
+    "calculateButton": "Calcular",
+    "calculatingButton": "Buscando...",
+    "resultsTitle": "Resultados en tu ciudad",
+    "lastUpdated": "Actualizado",
+    "estimation": "Estimación",
+    "errorFetching": "Error al cargar los resultados"
+  },
+  "ShopPage": {
+    "lastUpdated": "Precios actualizados hace",
+    "verifiedBadge": "Comercio verificado",
+    "callButton": "Llamar",
+    "whatsappButton": "WhatsApp",
+    "directionsButton": "Cómo llegar",
+    "scrapPricesTitle": "Precios de compra por gramo",
+    "metalColumn": "Metal",
+    "purityColumn": "Pureza",
+    "buyPricePerGramColumn": "Compra €/g",
+    "bullionPricesTitle": "Bullion y monedas",
+    "productColumn": "Producto",
+    "buyPricePerUnitColumn": "Compra €/ud",
+    "sellPricePerUnitColumn": "Venta €/ud",
+    "noBullionMessage": "No se compran/venden bullions.",
+    "infoTitle": "Información",
+    "addressLabel": "Dirección",
+    "hoursLabel": "Horario de hoy",
+    "hoursNotAvailable": "No disponible",
+    "disclaimer": "Aviso: Los precios pueden cambiar según el análisis de pureza y peso."
+  },
+  "LoginPage": {
+    "title": "Acceso para Comerciantes",
+    "emailLabel": "Dirección de email",
+    "passwordLabel": "Contraseña",
+    "signInButton": "Iniciar sesión",
+    "signingInButton": "Iniciando sesión...",
+    "errorInvalidCredentials": "Credenciales inválidas"
+  },
+  "MerchantNav": {
+    "prices": "Precios",
+    "profile": "Perfil"
+  },
+  "MerchantPricesPage": {
+    "title": "Tus Precios",
+    "saveButton": "Guardar Cambios",
+    "savingButton": "Guardando...",
+    "scrapTitle": "Chatarra",
+    "bullionTitle": "Bullion y Monedas",
+    "bullionComingSoon": "Gestión de precios de bullion próximamente.",
+    "loading": "Cargando precios...",
+    "error": "Error",
+    "success": "¡Precios actualizados con éxito!"
+  },
+  "MerchantProfilePage": {
+    "title": "Perfil de la Tienda",
+    "logoTitle": "Logo de la Tienda",
+    "chooseLogoButton": "Elegir Nuevo Logo",
+    "logoDisclaimer": "Formatos aceptados: PNG, JPG, WEBP. Tamaño máx: 2MB.",
+    "addressLabel": "Dirección",
+    "phoneLabel": "Número de Teléfono",
+    "whatsappLabel": "Número de WhatsApp (opcional)",
+    "saveButton": "Guardar Perfil",
+    "savingButton": "Guardando...",
+    "loading": "Cargando perfil...",
+    "success": "¡Perfil actualizado con éxito!",
+    "error": "Error"
+  },
+  "LogoUpload": {
+    "errorNoFile": "No se proporcionó ningún archivo.",
+    "errorInvalidType": "Tipo de archivo inválido. Solo se aceptan JPG, PNG, y WEBP.",
+    "errorFileTooLarge": "Archivo demasiado grande. El tamaño máximo es 2MB."
+  }
+}
