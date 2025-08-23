@@ -78,11 +78,19 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
           ) : <p className="text-sm text-gray-500">No se compran/venden bullions.</p>}
         </div>
       </div>
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg border">
-          <h3 className="font-semibold">Información</h3>
-          <p className="mt-2 text-sm text-gray-600"><strong>Dirección:</strong> {shopData.address_line}</p>
-          <p className="text-sm text-gray-600"><strong>Horario de hoy:</strong> {shopData.opening_hours || 'No disponible'}</p>
-          <p className="mt-4 text-xs text-gray-500">Aviso: Los precios pueden cambiar según el análisis de pureza y peso.</p>
+
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="p-4 bg-gray-50 rounded-lg border h-full">
+            <h3 className="font-semibold">Información</h3>
+            <p className="mt-2 text-sm text-gray-600"><strong>Dirección:</strong> {shopData.address_line}</p>
+            <p className="text-sm text-gray-600"><strong>Horario de hoy:</strong> {shopData.opening_hours || 'No disponible'}</p>
+            <p className="mt-4 text-xs text-gray-500">Aviso: Los precios pueden cambiar según el análisis de pureza y peso.</p>
+        </div>
+        {shopData.store_image_url && (
+          <div className="w-full">
+            <img src={shopData.store_image_url} alt={`Foto de la tienda ${shopData.name}`} className="w-full h-auto rounded-lg shadow-md" />
+          </div>
+        )}
       </div>
     </div>
   );

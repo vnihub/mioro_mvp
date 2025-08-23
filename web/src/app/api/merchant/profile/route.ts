@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 
   try {
     const result = await pool.query(
-      'SELECT id, name, address_line, phone, whatsapp, logo_url, email FROM shops WHERE merchant_id = $1 ORDER BY id LIMIT 1',
+      'SELECT id, name, address_line, phone, whatsapp, logo_url, store_image_url, email FROM shops WHERE merchant_id = $1 ORDER BY id LIMIT 1',
       [session.merchant_id]
     );
     if (result.rows.length === 0) {

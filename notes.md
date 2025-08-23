@@ -36,10 +36,8 @@ This document outlines features, improvements, and refactorings to consider afte
 - **Action Taken:** Implemented server-side image processing using the `sharp` library for logo uploads. Images are now automatically resized, converted to WebP, and compressed, improving performance and ensuring correct display.
 
 ## 6. Store Entrance Photo Upload
-- **Status:** Pending Re-implementation.
-- **Current State:** Feature not implemented.
-- **Adaptation:** Allow merchants to upload a picture of their store entrance, displayed on the shop's public page and managed in the admin section.
-- **Benefit:** Easier landmark recognition for visitors, enhanced shop profiles.
+- **Status:** Done.
+- **Action Taken:** Implemented functionality for merchants to upload a picture of their store entrance. This included adding a `store_image_url` to the `shops` table, creating a new API endpoint for uploads with image processing, and updating the merchant profile page and public shop page to allow uploading and displaying the image.
 
 ## 7. Enhanced Error Handling & Logging
 - **Status:** In Progress.

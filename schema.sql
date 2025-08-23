@@ -32,6 +32,7 @@ CREATE TABLE shops (
     city_id INTEGER NOT NULL REFERENCES cities(id) ON DELETE RESTRICT,
     name TEXT NOT NULL,
     logo_url TEXT,
+    store_image_url TEXT,
     address_line TEXT NOT NULL,
     latitude DECIMAL(9, 6),
     longitude DECIMAL(9, 6),

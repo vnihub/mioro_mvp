@@ -120,6 +120,30 @@ export default function MerchantProfilePage() {
     }
   };
 
+  const handleStoreImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setSuccess(null);
+    const formData = new FormData();
+    formData.append('store_image', file);
+    try {
+      const res = await fetch('/api/merchant/upload-store-image', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Store image upload failed');
+      }
+      const data = await res.json();
+      setProfile(prev => ({ ...prev, store_image_url: `${data.imageUrl}?t=${new Date().getTime()}` }));
+      setSuccess('¡Imagen de la tienda actualizada con éxito!');
+    } catch (err: any) {
+      setError('No se pudo subir la imagen. Inténtalo de nuevo.');
+    }
+  };
+
   if (loading) return <ProfileSkeleton />;
 
   return (
@@ -138,6 +162,20 @@ export default function MerchantProfilePage() {
           </div>
         </div>
         <p className="text-xs text-gray-500 mt-2">Formatos aceptados: PNG, JPG, WEBP. Tamaño máx: 2MB.</p>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-2">Foto de la Tienda</h2>
+        <div className="flex items-center gap-4">
+          <img src={profile.store_image_url || 'https://via.placeholder.com/150x100'} alt="Current store image" className="w-40 h-28 rounded-lg border bg-gray-100 object-cover" />
+          <div>
+            <label htmlFor="store-image-upload" className="cursor-pointer rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-300">
+              Elegir Nueva Foto
+            </label>
+            <input id="store-image-upload" type="file" name="store_image" accept="image/png, image/jpeg, image/webp" onChange={handleStoreImageUpload} className="hidden" />
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mt-2">Esta imagen ayudará a los clientes a reconocer tu tienda. Tamaño máx: 10MB.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
