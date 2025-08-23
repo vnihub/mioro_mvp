@@ -33,7 +33,7 @@ This document outlines features, improvements, and refactorings to consider afte
 
 ## 5. Image Handling Improvements
 - **Status:** Done.
-- **Action Taken:** Implemented server-side image processing using the `sharp` library for logo uploads. Images are now automatically resized, converted to WebP, and compressed, improving performance and ensuring correct display.
+- **Action Taken:** Implemented server-side image processing using the `sharp` library for all image uploads (logos and store photos). Images are now automatically resized, converted to WebP, and compressed. Logo uploads are limited to 2MB, and store image uploads are limited to 10MB, improving performance and ensuring correct display.
 
 ## 6. Store Entrance Photo Upload
 - **Status:** Done.
