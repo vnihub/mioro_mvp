@@ -119,7 +119,9 @@ export default function MerchantPricesPage() {
       if (!res.ok) throw new Error('Failed to save changes');
       setSuccess('¡Precios actualizados con éxito!');
       fetchPrices();
-    } catch (err: any) { setError(err.message); } finally { setIsSaving(false); }
+    } catch (err: any) {
+      setError('No se pudieron guardar los cambios. Inténtalo de nuevo.');
+    } finally { setIsSaving(false); }
   };
 
   if (loading) return <p className="text-center p-8">Cargando precios...</p>;

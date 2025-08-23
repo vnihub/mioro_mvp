@@ -111,7 +111,7 @@ export default function MerchantProfilePage() {
         throw new Error(data.error || 'Logo upload failed');
       }
       const data = await res.json();
-      setProfile(prev => ({ ...prev, logo_url: `${data.logoUrl}?t=${new Date().getTime()}` }));
+      setProfile(prev => ({ ...prev, logo_url: `${`${data.logoUrl}?t=${new Date().getTime()}`}?t=${new Date().getTime()}` }));
       setSuccess('¡Logo actualizado con éxito!');
     } catch (err: any) {
       setError('No se pudo subir el logo. Inténtalo de nuevo.');
