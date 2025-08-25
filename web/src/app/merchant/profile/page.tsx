@@ -153,7 +153,7 @@ export default function MerchantProfilePage() {
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Logo de la Tienda</h2>
         <div className="flex items-center gap-4">
-          <img src={profile.logo_url || 'https://via.placeholder.com/100'} alt="Current logo" className="w-24 h-24 rounded-full border bg-gray-100 object-cover" />
+          <img src={profile.logo_url || 'https://via.placeholder.com/100'} alt="Logo actual" className="w-24 h-24 rounded-full border bg-gray-100 object-cover" />
           <div>
             <label htmlFor="logo-upload" className="cursor-pointer rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-300">
               Elegir Nuevo Logo
@@ -167,7 +167,7 @@ export default function MerchantProfilePage() {
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Foto de la Tienda</h2>
         <div className="flex items-center gap-4">
-          <img src={profile.store_image_url || 'https://via.placeholder.com/150x100'} alt="Current store image" className="w-40 h-28 rounded-lg border bg-gray-100 object-cover" />
+          <img src={profile.store_image_url || 'https://via.placeholder.com/150x100'} alt="Imagen actual de la tienda" className="w-40 h-28 rounded-lg border bg-gray-100 object-cover" />
           <div>
             <label htmlFor="store-image-upload" className="cursor-pointer rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-300">
               Elegir Nueva Foto

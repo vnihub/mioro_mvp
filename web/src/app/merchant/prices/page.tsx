@@ -69,7 +69,7 @@ export default function MerchantPricesPage() {
     try {
       setLoading(true);
       const res = await fetch('/api/merchant/prices');
-      if (!res.ok) throw new Error('Failed to fetch prices');
+      if (!res.ok) throw new Error('Error al cargar los precios');
       const data = await res.json();
       setPrices(data);
     } catch (err: any) { setError(err.message); } finally { setLoading(false); }
@@ -116,7 +116,7 @@ export default function MerchantPricesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(prices),
       });
-      if (!res.ok) throw new Error('Failed to save changes');
+      if (!res.ok) throw new Error('Error al guardar los cambios');
       setSuccess('¡Precios actualizados con éxito!');
       fetchPrices();
     } catch (err: any) {

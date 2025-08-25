@@ -31,6 +31,6 @@ export async function GET(request: Request, { params }: { params: { city_id: str
     return NextResponse.json(rows);
   } catch (error) {
     console.error(`API Error fetching shops for city ${city_id}:`, error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 }

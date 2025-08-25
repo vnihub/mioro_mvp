@@ -12,6 +12,30 @@
 
 ### Session Summary (2025-08-25)
 
+- Translated the remaining English words to Spanish on the frontend.
+
+### Session Summary (2025-08-25)
+
+- Re-created the test user after it was deleted by the database seed script.
+- Apologized for the recurring issue with the test user deletion.
+
+### Session Summary (2025-08-25)
+
+- Implemented the gray logo placeholder on the shop's page to provide a consistent user experience.
+
+### Session Summary (2025-08-25)
+
+- Fixed a console error for missing shop logos by replacing the broken placeholder image with a local placeholder.
+- Debugged and fixed an issue where the `cities` table was not being populated correctly by the seed script.
+
+### Session Summary (2025-08-25)
+
+- Reverted all changes made for the "Implement email deliverability verification" task, as it was started without explicit user consent.
+- Created a down migration to remove the `is_email_verified` and `verification_token` columns from the `merchant_users` table.
+- Deleted the API endpoint and reverted the changes to the `create-test-user.js` script.
+
+### Session Summary (2025-08-25)
+
 - Consolidated the project documentation by moving the remaining information from `context.md` to `planning.md` and deleting `context.md`.
 
 ### Session Summary (2025-08-25)

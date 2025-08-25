@@ -12,7 +12,13 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-        <img src={shopData.logo_url || 'https://via.placeholder.com/150'} alt={`${shopData.name} logo`} className="w-24 h-24 rounded-full border" />
+                {shopData.logo_url ? (
+          <img src={shopData.logo_url} alt={`${shopData.name} logo`} className="w-24 h-24 rounded-full border" />
+        ) : (
+          <div className="w-24 h-24 rounded-full border bg-gray-200 flex items-center justify-center">
+            <span className="text-sm text-gray-500">No Logo</span>
+          </div>
+        )}
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{shopData.name}</h1>
           <p className="text-gray-500 mt-1">Precios actualizados hace {new Date(shopData.last_price_update_at).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</p>

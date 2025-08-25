@@ -10,6 +10,6 @@ export async function GET(request: Request) {
     return NextResponse.json(result.rows);
   } catch (error) {
     console.error('Error fetching bullion SKUs:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 }

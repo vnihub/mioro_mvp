@@ -272,7 +272,13 @@ export default function Home() {
               <Link href={`/shop/${shop.shop_id}`} key={shop.shop_id} className="block">
                 <div className="bg-white p-4 rounded-lg shadow flex items-center justify-between hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-4">
-                    <img src={shop.logo_url || 'https://via.placeholder.com/40'} alt="logo" className="w-10 h-10 rounded-full" />
+                    {shop.logo_url ? (
+                      <img src={shop.logo_url} alt="logo" className="w-10 h-10 rounded-full" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-xs text-gray-500">No Logo</span>
+                      </div>
+                    )}
                     <div>
                       <p className="font-semibold">{shop.shop_name}</p>
                       <p className="text-sm text-gray-500">Actualizado: {new Date(shop.last_price_update_at).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</p>
