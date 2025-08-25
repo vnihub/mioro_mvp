@@ -2,9 +2,27 @@
 TRUNCATE TABLE cities, merchants, shops, bullion_skus, price_entries RESTART IDENTITY CASCADE;
 
 -- Seed Cities
-INSERT INTO cities (id, country_code, name, slug) VALUES
-(1, 'ES', 'Madrid', 'madrid'),
-(2, 'ES', 'Barcelona', 'barcelona');
+INSERT INTO cities (id, country_code, name, slug, region_id, is_capital) VALUES
+(1, 'ES', 'Madrid', 'madrid', (SELECT id from regions WHERE slug = 'comunidad-de-madrid'), true),
+(2, 'ES', 'Barcelona', 'barcelona', (SELECT id from regions WHERE slug = 'cataluna'), true),
+(3, 'ES', 'Sevilla', 'sevilla', (SELECT id from regions WHERE slug = 'andalucia'), true),
+(4, 'ES', 'Zaragoza', 'zaragoza', (SELECT id from regions WHERE slug = 'aragon'), true),
+(5, 'ES', 'Oviedo', 'oviedo', (SELECT id from regions WHERE slug = 'asturias'), true),
+(6, 'ES', 'Palma de Mallorca', 'palma-de-mallorca', (SELECT id from regions WHERE slug = 'islas-baleares'), true),
+(7, 'ES', 'Vitoria-Gasteiz', 'vitoria-gasteiz', (SELECT id from regions WHERE slug = 'pais-vasco'), true),
+(8, 'ES', 'Las Palmas de Gran Canaria', 'las-palmas-de-gran-canaria', (SELECT id from regions WHERE slug = 'islas-canarias'), true),
+(9, 'ES', 'Santa Cruz de Tenerife', 'santa-cruz-de-tenerife', (SELECT id from regions WHERE slug = 'islas-canarias'), false),
+(10, 'ES', 'Santander', 'santander', (SELECT id from regions WHERE slug = 'cantabria'), true),
+(11, 'ES', 'Valladolid', 'valladolid', (SELECT id from regions WHERE slug = 'castilla-y-leon'), true),
+(12, 'ES', 'Toledo', 'toledo', (SELECT id from regions WHERE slug = 'castilla-la-mancha'), true),
+(13, 'ES', 'Mérida', 'merida', (SELECT id from regions WHERE slug = 'extremadura'), true),
+(14, 'ES', 'Santiago de Compostela', 'santiago-de-compostela', (SELECT id from regions WHERE slug = 'galicia'), true),
+(15, 'ES', 'Logroño', 'logrono', (SELECT id from regions WHERE slug = 'la-rioja'), true),
+(16, 'ES', 'Pamplona', 'pamplona', (SELECT id from regions WHERE slug = 'navarra'), true),
+(17, 'ES', 'Murcia', 'murcia', (SELECT id from regions WHERE slug = 'region-de-murcia'), true),
+(18, 'ES', 'Valencia', 'valencia', (SELECT id from regions WHERE slug = 'comunidad-valenciana'), true),
+(19, 'ES', 'Ceuta', 'ceuta', (SELECT id from regions WHERE slug = 'ceuta'), true),
+(20, 'ES', 'Melilla', 'melilla', (SELECT id from regions WHERE slug = 'melilla'), true);
 
 -- Seed Merchants
 INSERT INTO merchants (id, legal_name, display_name, contact_email, status, verification_level) VALUES
