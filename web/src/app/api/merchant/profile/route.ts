@@ -65,8 +65,8 @@ export async function POST(request: Request) {
 
     const updateQuery = `
       UPDATE shops
-      SET address_line = $1, phone = $2, whatsapp = $3, email = $4
-      WHERE id = $5 AND merchant_id = $6;
+      SET address_line = $1, phone = $2, whatsapp = $3, email = $4, opening_hours = $5
+      WHERE id = $6 AND merchant_id = $7;
     `;
     
     const result = await pool.query(updateQuery, [
@@ -74,6 +74,7 @@ export async function POST(request: Request) {
       phone,
       whatsapp,
       email,
+      opening_hours,
       id,
       session.merchant_id
     ]);

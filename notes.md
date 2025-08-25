@@ -31,14 +31,6 @@ This document outlines features, improvements, and refactorings to consider afte
     - User reporting/flagging of content.
 - **Benefit:** Platform trust, security, and operational efficiency.
 
-## 5. Image Handling Improvements
-- **Status:** Done.
-- **Action Taken:** Implemented server-side image processing using the `sharp` library for all image uploads (logos and store photos). Images are now automatically resized, converted to WebP, and compressed. Logo uploads are limited to 2MB, and store image uploads are limited to 10MB, improving performance and ensuring correct display.
-
-## 6. Store Entrance Photo Upload
-- **Status:** Done.
-- **Action Taken:** Implemented functionality for merchants to upload a picture of their store entrance. This included adding a `store_image_url` to the `shops` table, creating a new API endpoint for uploads with image processing, and updating the merchant profile page and public shop page to allow uploading and displaying the image.
-
 ## 7. Enhanced Error Handling & Logging
 - **Status:** In Progress.
 - **Completed:**
@@ -89,16 +81,3 @@ This section outlines high-impact, AI-driven features to transform the platform 
     - **AI-Generated Summary:** Each shop profile includes a verified summary of its reputation and specialties.
     - **Intelligent Matchmaking:** The platform recommends the "best shop for *you*," considering factors like the item being sold and the seller's needs, not just the highest price.
 - **Strategic Value:** Builds a deep, defensible moat based on trust. Competitors can copy a price list, but not this nuanced understanding of the market, making Mioro the safest and most reliable platform.
-
----
-
-# DONE
-
-## Bullion/Coin Search for Public Users
-- **Current State:** Implemented. Public users can now search for bullion products by type and quantity.
-- **Adaptation:** Extend the public-facing calculator and search results to include bullion products.
-- **Benefit:** Completes a core feature, expands user utility.
-
-## Project Structure Cleanup
-- **Status:** Done.
-- **Action Taken:** Consolidated all dependencies into the root `package.json` and removed the nested `package.json` from the `/web` directory. This resolved the multiple `package-lock.json` warning and simplified the project structure.

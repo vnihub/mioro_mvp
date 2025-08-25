@@ -83,6 +83,7 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
         <div className="p-4 bg-gray-50 rounded-lg border h-full">
             <h3 className="font-semibold">Información</h3>
             <p className="mt-2 text-sm text-gray-600"><strong>Dirección:</strong> {shopData.address_line}</p>
+            <p className="text-sm text-gray-600"><strong>Teléfono:</strong> {shopData.phone || 'No disponible'}</p>
             <p className="text-sm text-gray-600"><strong>Horario de hoy:</strong> {shopData.opening_hours || 'No disponible'}</p>
             <p className="mt-4 text-xs text-gray-500">Aviso: Los precios pueden cambiar según el análisis de pureza y peso.</p>
         </div>
