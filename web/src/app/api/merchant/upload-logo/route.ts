@@ -13,7 +13,7 @@ const tempDir = path.join(process.cwd(), 'tmp');
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session.merchant_id) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
   }
 
   let tempFilePath: string | null = null;
@@ -23,17 +23,17 @@ export async function POST(request: Request) {
     const file: File | null = data.get('logo') as unknown as File;
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided.' }, { status: 400 });
+      return NextResponse.json({ error: 'No se proporcionó ningún archivo.' }, { status: 400 });
     }
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Only JPG, PNG, and WEBP are allowed.' }, { status: 400 });
+      return NextResponse.json({ error: 'Tipo de archivo no válido. Solo se permiten JPG, PNG y WEBP.' }, { status: 400 });
     }
 
     const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSizeInBytes) {
-      return NextResponse.json({ error: `File is too large. Maximum size is ${maxSizeInBytes / 1024 / 1024}MB.` }, { status: 400 });
+      return NextResponse.json({ error: `El archivo es demasiado grande. El tamaño máximo es de ${maxSizeInBytes / 1024 / 1024}MB.` }, { status: 400 });
     }
 
     await mkdir(tempDir, { recursive: true });
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('Logo upload error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
   } finally {
     if (tempFilePath) {
       try {

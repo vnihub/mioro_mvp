@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Spinner from '@/components/Spinner';
 
 interface Region { id: number; name: string; }
 interface Purity { id: number; label: string; }
@@ -46,8 +47,12 @@ export default function Home() {
   const [purities, setPurities] = useState<Purity[]>([]);
   const [bullionSkus, setBullionSkus] = useState<BullionSku[]>([]);
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [sortedResults, setSortedResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [searched, setSearched] = useState(false);
+  const [sortBy, setSortBy] = useState('payout');
 
   // Fetch regions and bullion SKUs
   useEffect(() => {
@@ -59,6 +64,7 @@ export default function Home() {
         setRegions(data);
       } catch (err: any) {
         console.error('Error fetching regions:', err);
+        setFormError('Error al cargar las regiones.');
       }
     };
 
@@ -93,6 +99,7 @@ export default function Home() {
           }
         } catch (err: any) {
           console.error('Error fetching cities:', err);
+          setFormError('Error al cargar las ciudades.');
         }
       };
       fetchCities();
@@ -115,11 +122,28 @@ export default function Home() {
     }
   }, [metal, searchType]);
 
+  // Sort results when results or sortBy changes
+  useEffect(() => {
+    let sorted = [...results];
+    sorted.sort((a, b) => {
+      if (sortBy === 'payout') {
+        return b.estimated_payout_eur - a.estimated_payout_eur;
+      } else if (sortBy === 'name') {
+        return a.shop_name.localeCompare(b.shop_name);
+      } else if (sortBy === 'updated') {
+        return new Date(b.last_price_update_at).getTime() - new Date(a.last_price_update_at).getTime();
+      }
+      return 0;
+    });
+    setSortedResults(sorted);
+  }, [results, sortBy]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     setResults([]);
+    setSearched(true);
 
     if (!city) {
       setError('Por favor, selecciona una ciudad.');
@@ -155,8 +179,7 @@ export default function Home() {
           last_price_update_at: shop.last_price_update_at,
           estimated_payout_eur,
         };
-      }).filter(r => r.estimated_payout_eur > 0)
-        .sort((a, b) => b.estimated_payout_eur - a.estimated_payout_eur);
+      }).filter(r => r.estimated_payout_eur > 0);
 
       setResults(calculatedResults);
     } catch (err: any) {
@@ -174,6 +197,7 @@ export default function Home() {
       </div>
 
       <div className="mt-8 max-w-md mx-auto bg-white p-6 rounded-2xl shadow-md">
+        {formError && <p className="text-red-500 text-center mb-4">{formError}</p>}
         <form onSubmit={handleSubmit}>
           {/* Search Type Toggle */}
           <div className="mb-4 flex justify-center space-x-4">
@@ -264,11 +288,25 @@ export default function Home() {
       </div>
 
       <div className="mt-8 max-w-2xl mx-auto">
+        {loading && <Spinner />}
         {error && <p className="text-red-500 text-center">Error: {error}</p>}
-        {results.length > 0 && (
+        {searched && sortedResults.length === 0 && !loading && (
+          <div className="text-center bg-white p-6 rounded-2xl shadow-md">
+            <h2 className="text-xl font-semibold font-display">No se encontraron resultados</h2>
+            <p className="mt-2 text-gray-600">Intenta ajustar los filtros de búsqueda o selecciona otra ciudad.</p>
+          </div>
+        )}
+        {sortedResults.length > 0 && !loading && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold font-display">Resultados en tu ciudad</h2>
-            {results.map(shop => (
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold font-display">Resultados en tu ciudad</h2>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="rounded-lg border border-gray-300 px-3 py-2 pr-10 bg-white focus:ring-2 focus:ring-[var(--color-primary)]">
+                <option value="payout">Mejor Paga</option>
+                <option value="name">Nombre (A-Z)</option>
+                <option value="updated">Actualizado Recientemente</option>
+              </select>
+            </div>
+            {sortedResults.map(shop => (
               <Link href={`/shop/${shop.shop_id}`} key={shop.shop_id} className="block">
                 <div className="bg-white p-4 rounded-lg shadow flex items-center justify-between hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-4">

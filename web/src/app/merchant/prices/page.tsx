@@ -116,11 +116,14 @@ export default function MerchantPricesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(prices),
       });
-      if (!res.ok) throw new Error('Error al guardar los cambios');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Error al guardar los cambios');
+      }
       setSuccess('¡Precios actualizados con éxito!');
       fetchPrices();
     } catch (err: any) {
-      setError('No se pudieron guardar los cambios. Inténtalo de nuevo.');
+      setError(err.message || 'No se pudieron guardar los cambios. Inténtalo de nuevo.');
     } finally { setIsSaving(false); }
   };
 

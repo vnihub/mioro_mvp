@@ -1,6 +1,6 @@
 -- migrations/002_seed_regions.sql
 
-TRUNCATE TABLE regions CASCADE;
+-- TRUNCATE TABLE regions CASCADE;
 
 INSERT INTO regions (country_code, name, slug) VALUES
 ('ES', 'Andalucía', 'andalucia'),

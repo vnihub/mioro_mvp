@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import { getSession } from '@/lib/session';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '/Users/victornicolaescu/Documents/Websites/mioro/MVP/.env' });
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
   try {
     const pricesToUpdate: { id: number | string; price_eur: number; side?: 'buy' | 'sell', is_new?: boolean, is_deleted?: boolean, bullion_sku_id?: number, metal_code?: string, context?: 'scrap' | 'bullion' }[] = await request.json();
     if (!Array.isArray(pricesToUpdate)) {
-      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+      return NextResponse.json({ error: 'Payload inválido' }, { status: 400 });
     }
 
     await client.query('BEGIN');
@@ -73,14 +76,13 @@ export async function POST(request: Request) {
             await client.query('DELETE FROM price_entries WHERE bullion_sku_id = $1 AND shop_id = $2', [price.bullion_sku_id, shopId]);
           }
         } else if (price.is_new) {
-          // Insert new bullion price entries
-          if (price.bullion_sku_id && price.metal_code) {
+          // Insert new bullion price entry
+          if (price.bullion_sku_id && price.metal_code && price.side) {
             await client.query(
               `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price_eur)
-               VALUES ($1, $2, $3, 'bullion', 'buy', 'per_item', 0), 
-                      ($1, $2, $3, 'bullion', 'sell', 'per_item', 0)
-               ON CONFLICT (shop_id, bullion_sku_id, side) DO NOTHING`,
-              [shopId, price.metal_code, price.bullion_sku_id]
+               VALUES ($1, $2, $3, 'bullion', $4, 'per_item', 0)
+               ON CONFLICT (shop_id, side, bullion_sku_id) DO NOTHING`,
+              [shopId, price.metal_code, price.bullion_sku_id, price.side]
             );
           }
         } else {
@@ -100,7 +102,7 @@ export async function POST(request: Request) {
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error updating merchant prices:', error);
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Error interno del servidor' }, { status: 500 });
   } finally {
     client.release();
   }

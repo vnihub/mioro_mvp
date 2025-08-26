@@ -9,13 +9,8 @@ const createTestUser = async () => {
   const password = 'password123';
   const merchantId = 1; // Corresponds to 'Oro Rápido Centro S.L.' from seed.sql
 
-  // Check if user already exists
-  const existingUser = await pool.query('SELECT * FROM merchant_users WHERE email = $1', [email]);
-  if (existingUser.rows.length > 0) {
-    console.log('Test user already exists.');
-    pool.end();
-    return;
-  }
+  // Delete user if it exists
+  await pool.query('DELETE FROM merchant_users WHERE email = $1', [email]);
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);

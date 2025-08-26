@@ -9,6 +9,16 @@ async function getShopData(id: string) {
 const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
   const shopData = await getShopData(params.id);
 
+  const formatOpeningHours = (hours: { open: string, close: string } | null): string => {
+    if (!hours || !hours.open || !hours.close) {
+      return 'Cerrado';
+    }
+    return `${hours.open} - ${hours.close}`;
+  };
+
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  const openingHoursToday = shopData.opening_hours ? formatOpeningHours(shopData.opening_hours[today]) : 'No disponible';
+
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
@@ -21,6 +31,7 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
         )}
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{shopData.name}</h1>
+          
           <p className="text-gray-500 mt-1">Precios actualizados hace {new Date(shopData.last_price_update_at).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</p>
           {shopData.verification_level === 'basic' && (
             <span className="mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs bg-green-100 text-green-800">
@@ -88,9 +99,10 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <div className="p-4 bg-gray-50 rounded-lg border h-full">
             <h3 className="font-semibold">Información</h3>
+            {shopData.description && <p className="mt-2 text-sm text-gray-600"><strong>Descripción:</strong> {shopData.description}</p>}
             <p className="mt-2 text-sm text-gray-600"><strong>Dirección:</strong> {shopData.address_line}</p>
             <p className="text-sm text-gray-600"><strong>Teléfono:</strong> {shopData.phone || 'No disponible'}</p>
-            <p className="text-sm text-gray-600"><strong>Horario de hoy:</strong> {shopData.opening_hours || 'No disponible'}</p>
+            <p className="text-sm text-gray-600"><strong>Horario de hoy:</strong> {openingHoursToday}</p>
             <p className="mt-4 text-xs text-gray-500">Aviso: Los precios pueden cambiar según el análisis de pureza y peso.</p>
         </div>
         {shopData.store_image_url && (

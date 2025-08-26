@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
 import { getSession, SessionData } from '@/lib/session';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '/Users/victornicolaescu/Documents/Websites/mioro/MVP/.env' });
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 

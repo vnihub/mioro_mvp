@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react';
 
 // --- INTERFACES ---
+interface OpeningHours {
+  [key: string]: { open: string; close: string } | null;
+}
+
 interface ProfileData {
   id: number;
   name: string;
@@ -11,6 +15,9 @@ interface ProfileData {
   whatsapp: string;
   email: string;
   logo_url?: string;
+  store_image_url?: string;
+  opening_hours?: OpeningHours;
+  description?: string;
 }
 
 // --- SKELETON COMPONENT ---
@@ -28,7 +35,7 @@ const ProfileSkeleton = () => (
       <div className="h-4 bg-gray-200 rounded-md w-1/2 mt-2"></div>
     </div>
     <div className="space-y-4">
-      {[...Array(4)].map((_, i) => (
+      {[...Array(5)].map((_, i) => (
         <div key={i}>
           <div className="h-5 w-1/4 bg-gray-200 rounded-md mb-1"></div>
           <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
@@ -66,9 +73,40 @@ export default function MerchantProfilePage() {
     fetchProfile();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProfile(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleOpeningHoursChange = (day: string, field: 'open' | 'close', value: string) => {
+    setProfile(prev => {
+      const openingHours = prev.opening_hours || {};
+      const dayHours = openingHours[day];
+
+      if (dayHours === null) {
+        return prev; // Day is closed, should not be editable
+      }
+
+      const newDayHours = { ...(dayHours || { open: '', close: '' }), [field]: value };
+      const newOpeningHours = { ...openingHours, [day]: newDayHours };
+      
+      return { ...prev, opening_hours: newOpeningHours };
+    });
+  };
+
+  const handleClosedChange = (day: string, isClosed: boolean) => {
+    setProfile(prev => {
+      const openingHours = prev.opening_hours || {};
+      const newOpeningHours = { ...openingHours };
+
+      if (isClosed) {
+        newOpeningHours[day] = null;
+      } else {
+        newOpeningHours[day] = { open: '09:00', close: '17:00' };
+      }
+
+      return { ...prev, opening_hours: newOpeningHours };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,10 +115,15 @@ export default function MerchantProfilePage() {
     setError(null);
     setSuccess(null);
     try {
+      const profileToSend = {
+        ...profile,
+        id: profile.id,
+        opening_hours: profile.opening_hours || {},
+      };
       const res = await fetch('/api/merchant/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profile),
+        body: JSON.stringify(profileToSend),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -111,7 +154,7 @@ export default function MerchantProfilePage() {
         throw new Error(data.error || 'Logo upload failed');
       }
       const data = await res.json();
-      setProfile(prev => ({ ...prev, logo_url: `${`${data.logoUrl}?t=${new Date().getTime()}`}?t=${new Date().getTime()}` }));
+      setProfile(prev => ({ ...prev, logo_url: `${data.logoUrl}?t=${new Date().getTime()}` }));
       setSuccess('¡Logo actualizado con éxito!');
     } catch (err: any) {
       setError('No se pudo subir el logo. Inténtalo de nuevo.');
@@ -179,13 +222,14 @@ export default function MerchantProfilePage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="hidden" name="id" value={profile.id || ''} />
         <div>
           <label htmlFor="address_line" className="text-sm font-medium text-gray-700">Dirección <span className="text-red-500">*</span></label>
           <input type="text" name="address_line" id="address_line" value={profile.address_line || ''} onChange={handleInputChange} required className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
         </div>
         <div>
           <label htmlFor="phone" className="text-sm font-medium text-gray-700">Número de Teléfono <span className="text-red-500">*</span></label>
-          <input type="tel" name="phone" id="phone" value={profile.phone || ''} onChange={handleInputChange} required pattern="^(?:\+34)?[6789]\d{8}$" title="Por favor, introduce un número de teléfono español válido de 9 dígitos (ej. 612345678 o +34612345678)" className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+          <input type="tel" name="phone" id="phone" value={profile.phone || ''} onChange={handleInputChange} required className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
         </div>
         <div>
           <label htmlFor="email" className="text-sm font-medium text-gray-700">Email de Contacto <span className="text-red-500">*</span></label>
@@ -193,7 +237,69 @@ export default function MerchantProfilePage() {
         </div>
         <div>
           <label htmlFor="whatsapp" className="text-sm font-medium text-gray-700">Número de WhatsApp (opcional)</label>
-          <input type="tel" name="whatsapp" id="whatsapp" value={profile.whatsapp || ''} onChange={handleInputChange} pattern="^(?:\+34)?[6789]\d{8}$" title="Por favor, introduce un número de WhatsApp español válido de 9 dígitos (ej. 612345678 o +34612345678)" className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+          <input type="tel" name="whatsapp" id="whatsapp" value={profile.whatsapp || ''} onChange={handleInputChange} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+        </div>
+
+        <div>
+          <label htmlFor="description" className="text-sm font-medium text-gray-700">Descripción de la tienda</label>
+          <textarea
+            id="description"
+            name="description"
+            rows={4}
+            maxLength={1000}
+            value={profile.description || ''}
+            onChange={handleInputChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          />
+          <p className="text-xs text-gray-500 mt-1 text-right">{profile.description?.length || 0} / 1000</p>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Horario de Apertura</h2>
+          <div className="space-y-2">
+            {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => {
+              const isClosed = !profile.opening_hours || profile.opening_hours[day] === null;
+              const dayTranslations: { [key: string]: string } = {
+                monday: 'Lunes',
+                tuesday: 'Martes',
+                wednesday: 'Miércoles',
+                thursday: 'Jueves',
+                friday: 'Viernes',
+                saturday: 'Sábado',
+                sunday: 'Domingo'
+              };
+
+              return (
+                <div key={day} className="grid grid-cols-1 md:grid-cols-4 items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                  <label htmlFor={`closed-${day}`} className="capitalize text-sm font-medium text-gray-700 select-none">{dayTranslations[day]}</label>
+                  <input 
+                    type="time" 
+                    value={isClosed ? '' : profile.opening_hours?.[day]?.open || ''} 
+                    onChange={e => handleOpeningHoursChange(day, 'open', e.target.value)} 
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    disabled={isClosed}
+                  />
+                  <input 
+                    type="time" 
+                    value={isClosed ? '' : profile.opening_hours?.[day]?.close || ''} 
+                    onChange={e => handleOpeningHoursChange(day, 'close', e.target.value)} 
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    disabled={isClosed}
+                  />
+                  <div className="flex items-center justify-end">
+                    <input
+                      type="checkbox"
+                      id={`closed-${day}`}
+                      checked={isClosed}
+                      onChange={e => handleClosedChange(day, e.target.checked)}
+                      className="h-4 w-4 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer"
+                    />
+                    <label htmlFor={`closed-${day}`} className="ml-2 text-sm text-gray-600 select-none cursor-pointer">Cerrado</label>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
         <div className="flex items-center justify-end gap-4 pt-4">
           {error && <p className="text-sm text-red-500">Error: {error}</p>}

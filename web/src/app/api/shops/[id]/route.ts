@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '/Users/victornicolaescu/Documents/Websites/mioro/MVP/.env' });
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -38,8 +41,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const pricesResult = await pool.query(pricesQuery, [shopId]);
 
     // Separate prices into scrap and bullion
-    const scrapPrices = pricesResult.rows.filter(p => p.context === 'scrap').map(p => ({...p, price_eur: parseFloat(p.price_eur)}));
-    const bullionPrices = pricesResult.rows.filter(p => p.context === 'bullion').map(p => ({...p, price_eur: parseFloat(p.price_eur)}));
+    const scrapPrices = pricesResult.rows.filter(p => p.context === 'scrap').map(p => ({...p, price_eur: p.price_eur ? parseFloat(p.price_eur) : 0}));
+    const bullionPrices = pricesResult.rows.filter(p => p.context === 'bullion').map(p => ({...p, price_eur: p.price_eur ? parseFloat(p.price_eur) : 0}));
 
     // Combine into a single response object
     const response = {

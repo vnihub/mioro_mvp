@@ -6,6 +6,7 @@
 - **Check `tasks.md` before starting your work.** This file contains the list of tasks to be done. You should always know what the next task is.
 - **Mark completed tasks immediately.** When you finish a task, mark it as done in `tasks.md` with the completion date.
 - **Add any new tasks that you discover.** If you find new tasks during our conversation, add them to `tasks.md`.
+- **Wait for my consent** Never start developing a task without explicid consent
 - **At the end of each session, add a session summary to this file.** This will help us keep track of the progress made in each session.
 
 ## Session Summaries

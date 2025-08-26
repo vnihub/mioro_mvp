@@ -15,10 +15,7 @@ async function seedDatabase() {
   try {
     console.log('Seeding database...');
     const sql = fs.readFileSync(seedFilePath, 'utf8');
-    const statements = sql.split(';').filter(s => s.trim() !== '');
-    for (const statement of statements) {
-      await client.query(statement);
-    }
+    await client.query(sql);
     console.log('Database seeded successfully.');
   } catch (error) {
     console.error('Error seeding database:', error);

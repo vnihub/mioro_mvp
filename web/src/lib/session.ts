@@ -7,7 +7,7 @@ export interface SessionData extends IronSessionData {
   email?: string;
 }
 
-const sessionOptions = {
+export const sessionOptions = {
   password: process.env.SESSION_SECRET as string,
   cookieName: "mioro-session",
   cookieOptions: {
@@ -15,6 +15,6 @@ const sessionOptions = {
   },
 };
 
-export function getSession() {
-  return getIronSession<SessionData>(cookies(), sessionOptions);
+export async function getSession() {
+  return await getIronSession<SessionData>(cookies(), sessionOptions);
 }
