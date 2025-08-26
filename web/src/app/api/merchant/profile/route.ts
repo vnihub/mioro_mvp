@@ -16,7 +16,22 @@ export async function GET(request: Request) {
 
   try {
     const result = await pool.query(
-      'SELECT s.id, s.name, s.address_line, s.phone, s.whatsapp, s.email, s.logo_url, s.store_image_url, s.opening_hours, s.description, s.is_active FROM shops s WHERE s.merchant_id = $1 LIMIT 1',
+      `SELECT 
+        s.id, 
+        s.address_line, 
+        s.phone, 
+        s.whatsapp, 
+        s.logo_url, 
+        s.store_image_url, 
+        s.opening_hours, 
+        s.description, 
+        s.is_active, 
+        m.display_name AS name, -- Get name from merchants table
+        m.contact_email AS email -- Get email from merchants table
+      FROM shops s
+      JOIN merchants m ON s.merchant_id = m.id
+      WHERE s.merchant_id = $1 
+      LIMIT 1`,
       [session.merchant_id]
     );
 
@@ -56,35 +71,37 @@ export async function PUT(request: Request) {
     const dataToSave = { ...existingData, ...incomingData };
 
     // Basic validation on merged data
-    if (!dataToSave.name || !dataToSave.address_line || !dataToSave.phone || !dataToSave.email) {
+    if (!dataToSave.name || !dataToSave.address_line || !dataToSave.phone) {
       return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
     }
 
-    const query = `
+    // Update shops table
+    const shopQuery = `
       UPDATE shops 
       SET 
         name = $1, 
         address_line = $2, 
         phone = $3, 
         whatsapp = $4, 
-        email = $5, 
-        description = $6, 
-        opening_hours = $7,
-        is_active = $8
-      WHERE id = $9
+        description = $5, 
+        opening_hours = $6,
+        is_active = $7
+      WHERE id = $8
     `;
-
-    await client.query(query, [
+    await client.query(shopQuery, [
       dataToSave.name,
       dataToSave.address_line,
       dataToSave.phone,
       dataToSave.whatsapp,
-      dataToSave.email,
       dataToSave.description,
       dataToSave.opening_hours,
       dataToSave.is_active,
       shopId
     ]);
+
+    // Update merchants table (only display_name)
+    const merchantQuery = `UPDATE merchants SET display_name = $1 WHERE id = $2`;
+    await client.query(merchantQuery, [dataToSave.name, session.merchant_id]);
 
     await client.query('COMMIT');
 

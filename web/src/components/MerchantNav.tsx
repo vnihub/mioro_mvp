@@ -7,8 +7,8 @@ export function MerchantNav() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: '/merchant/prices', label: 'Precios' },
     { href: '/merchant/profile', label: 'Perfil' },
+    { href: '/merchant/prices', label: 'Precios' },
   ];
 
   return (
