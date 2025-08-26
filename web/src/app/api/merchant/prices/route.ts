@@ -15,6 +15,14 @@ export async function GET(request: Request) {
   }
 
   try {
+    // First, get the primary shop for the merchant
+    const shopResult = await pool.query('SELECT id FROM shops WHERE merchant_id = $1 ORDER BY id LIMIT 1', [session.merchant_id]);
+    const shopId = shopResult.rows[0]?.id;
+
+    if (!shopId) {
+      return NextResponse.json([]); // No shops found, return empty array
+    }
+
     const query = `
       SELECT 
         pe.id,
@@ -28,14 +36,13 @@ export async function GET(request: Request) {
         bs.id AS bullion_sku_id,
         bs.product_name AS sku
       FROM price_entries pe
-      JOIN shops s ON s.id = pe.shop_id
       JOIN metals m ON m.code = pe.metal_code
       LEFT JOIN purities p ON p.id = pe.purity_id
       LEFT JOIN bullion_skus bs ON bs.id = pe.bullion_sku_id
-      WHERE s.merchant_id = $1
+      WHERE pe.shop_id = $1
       ORDER BY pe.context, m.display_name, p.fineness_ppm DESC, bs.product_name;
     `;
-    const { rows } = await pool.query(query, [session.merchant_id]);
+    const { rows } = await pool.query(query, [shopId]);
     const prices = rows.map(p => ({...p, price_eur: parseFloat(p.price_eur)}));
     return NextResponse.json(prices);
   } catch (error) {
@@ -93,8 +100,8 @@ export async function POST(request: Request) {
       }
     }
 
-    const updateTimestampQuery = `UPDATE shops SET last_price_update_at = NOW() WHERE merchant_id = $1`;
-    await client.query(updateTimestampQuery, [session.merchant_id]);
+    const updateTimestampQuery = `UPDATE shops SET last_price_update_at = NOW() WHERE id = $1`;
+    await client.query(updateTimestampQuery, [shopId]);
 
     await client.query('COMMIT');
     return NextResponse.json({ ok: true, message: 'Prices updated successfully' });

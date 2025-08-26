@@ -31,6 +31,8 @@ This file tracks the tasks for the Mioro MVP project.
 - [x] Fix data fetching issues after description implementation. (2025-08-26)
 - [x] Fix login issue after re-seeding the database. (2025-08-26)
 - [x] Fix issue with saving new bullion prices. (2025-08-26)
+- [x] Fix data inconsistency between shop page and merchant prices page. (2025-08-26)
+- [x] Fix bullion price discrepancy and duplication on shop page. (2025-08-26)
 
 ## Future Tasks
 

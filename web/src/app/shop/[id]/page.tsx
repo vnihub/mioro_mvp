@@ -85,8 +85,8 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
                   {shopData.bullion_prices.map((item: any, index: number) => (
                     <tr key={index}>
                       <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{item.sku}</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right font-semibold">{item.side === 'buy' ? `${item.price_eur.toFixed(2)} €` : '-'}</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">{item.side === 'sell' ? `${item.price_eur.toFixed(2)} €` : '-'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right font-semibold">{item.buy ? `${item.buy.toFixed(2)} €` : '-'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">{item.sell ? `${item.sell.toFixed(2)} €` : '-'}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -11,6 +11,12 @@
 
 ## Session Summaries
 
+### Session Summary (2025-08-26)
+
+- Fixed a data inconsistency issue where the merchant prices page was showing a confusing, flat list of prices from all of a merchant's shops. The API now groups prices by shop, and the frontend displays them in a clear, organized manner.
+- Addressed and fixed a bug where the merchant prices page was showing prices for multiple shops instead of just the primary one.
+- Resolved a data discrepancy for bullion prices between the shop page and the merchant prices page, which was caused by an incorrect grouping logic in the API.
+
 ### Session Summary (2025-08-25)
 
 - Translated the remaining English words to Spanish on the frontend.
