@@ -31,9 +31,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Credenciales inválidas' }, { status: 401 });
     }
 
+    // Fetch the shop ID associated with the merchant
+    const shopResult = await pool.query('SELECT id FROM shops WHERE merchant_id = $1 LIMIT 1', [user.merchant_id]);
+    if (shopResult.rows.length === 0) {
+        return NextResponse.json({ error: 'No se encontró una tienda para este comerciante' }, { status: 404 });
+    }
+    const shopId = shopResult.rows[0].id;
+
     // Set session data
     session.user_id = user.id;
     session.merchant_id = user.merchant_id;
+    session.shop_id = shopId;
     session.email = user.email;
     await session.save();
 

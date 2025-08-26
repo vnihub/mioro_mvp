@@ -19,15 +19,15 @@ export async function GET(request: Request) {
       `SELECT 
         s.id, 
         s.address_line, 
-        s.phone, 
         s.whatsapp, 
         s.logo_url, 
         s.store_image_url, 
         s.opening_hours, 
         s.description, 
         s.is_active, 
-        m.display_name AS name, -- Get name from merchants table
-        m.contact_email AS email -- Get email from merchants table
+        m.display_name AS name,
+        m.contact_email AS email,
+        m.contact_phone AS phone
       FROM shops s
       JOIN merchants m ON s.merchant_id = m.id
       WHERE s.merchant_id = $1 
@@ -55,25 +55,10 @@ export async function PUT(request: Request) {
 
   const client = await pool.connect();
   try {
-    const incomingData = await request.json();
+    const { name, address_line, phone, whatsapp, description, opening_hours, is_active } = await request.json();
     const shopId = session.shop_id;
 
     await client.query('BEGIN');
-
-    // Verify that the shop belongs to the logged-in merchant and get existing data
-    const shopCheck = await client.query('SELECT * FROM shops WHERE id = $1 AND merchant_id = $2', [shopId, session.merchant_id]);
-    if (shopCheck.rows.length === 0) {
-      throw new Error('No tienes permiso para editar este perfil o la tienda no existe.');
-    }
-    const existingData = shopCheck.rows[0];
-
-    // Merge existing data with incoming data
-    const dataToSave = { ...existingData, ...incomingData };
-
-    // Basic validation on merged data
-    if (!dataToSave.name || !dataToSave.address_line || !dataToSave.phone) {
-      return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
-    }
 
     // Update shops table
     const shopQuery = `
@@ -86,22 +71,23 @@ export async function PUT(request: Request) {
         description = $5, 
         opening_hours = $6,
         is_active = $7
-      WHERE id = $8
+      WHERE id = $8 AND merchant_id = $9
     `;
     await client.query(shopQuery, [
-      dataToSave.name,
-      dataToSave.address_line,
-      dataToSave.phone,
-      dataToSave.whatsapp,
-      dataToSave.description,
-      dataToSave.opening_hours,
-      dataToSave.is_active,
-      shopId
+      name,
+      address_line,
+      phone,
+      whatsapp,
+      description,
+      opening_hours,
+      is_active,
+      shopId,
+      session.merchant_id
     ]);
 
-    // Update merchants table (only display_name)
-    const merchantQuery = `UPDATE merchants SET display_name = $1 WHERE id = $2`;
-    await client.query(merchantQuery, [dataToSave.name, session.merchant_id]);
+    // Update merchants table
+    const merchantQuery = `UPDATE merchants SET display_name = $1, contact_phone = $2 WHERE id = $3`;
+    await client.query(merchantQuery, [name, phone, session.merchant_id]);
 
     await client.query('COMMIT');
 

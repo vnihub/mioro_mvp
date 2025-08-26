@@ -28,7 +28,7 @@ export default async function MerchantLayout({
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col md:flex-row gap-8">
-        <aside className="md:w-1/4 lg:w-1/5">
+        <aside className="md:w-1/4 lg:w-1/5 flex flex-col">
           <div className="p-4 mb-6 bg-gray-100 rounded-xl">
             <p className="text-sm text-gray-500">Editando</p>
             <h2 className="font-bold text-lg text-gray-800">{shop?.name || 'Tu Tienda'}</h2>
