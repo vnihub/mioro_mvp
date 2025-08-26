@@ -13,6 +13,7 @@
 
 ### Session Summary (2025-08-26)
 
+- Fixed a critical bug that was preventing merchants from saving new bullion prices. The issue was traced to a mismatch between the application code and the actual database schema, which was resolved by implementing a more defensive `SELECT` then `INSERT`/`UPDATE` logic instead of relying on `ON CONFLICT`.
 - Fixed a data inconsistency issue where the merchant prices page was showing a confusing, flat list of prices from all of a merchant's shops. The API now groups prices by shop, and the frontend displays them in a clear, organized manner.
 - Addressed and fixed a bug where the merchant prices page was showing prices for multiple shops instead of just the primary one.
 - Resolved a data discrepancy for bullion prices between the shop page and the merchant prices page, which was caused by an incorrect grouping logic in the API.

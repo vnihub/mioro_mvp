@@ -83,14 +83,26 @@ export async function POST(request: Request) {
             await client.query('DELETE FROM price_entries WHERE bullion_sku_id = $1 AND shop_id = $2', [price.bullion_sku_id, shopId]);
           }
         } else if (price.is_new) {
-          // Insert new bullion price entry
           if (price.bullion_sku_id && price.metal_code && price.side) {
-            await client.query(
-              `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price_eur)
-               VALUES ($1, $2, $3, 'bullion', $4, 'per_item', 0)
-               ON CONFLICT (shop_id, side, bullion_sku_id) DO NOTHING`,
-              [shopId, price.metal_code, price.bullion_sku_id, price.side]
+            // Check if the entry already exists
+            const existingEntry = await client.query(
+              `SELECT id FROM price_entries 
+               WHERE shop_id = $1 AND side = $2 AND bullion_sku_id = $3 AND context = 'bullion'`,
+              [shopId, price.side, price.bullion_sku_id]
             );
+
+            if (existingEntry.rows.length > 0) {
+              // Entry exists, so we update it
+              const updateQuery = `UPDATE price_entries SET price_eur = $1 WHERE id = $2`;
+              await client.query(updateQuery, [price.price_eur || 0, existingEntry.rows[0].id]);
+            } else {
+              // Entry does not exist, so we insert it
+              await client.query(
+                `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price_eur)
+                 VALUES ($1, $2, $3, 'bullion', $4, 'per_item', $5)`,
+                [shopId, price.metal_code, price.bullion_sku_id, price.side, price.price_eur || 0]
+              );
+            }
           }
         } else {
           // Update existing bullion price entry
