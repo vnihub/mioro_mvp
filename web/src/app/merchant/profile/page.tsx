@@ -18,6 +18,7 @@ interface ProfileData {
   store_image_url?: string;
   opening_hours?: OpeningHours;
   description?: string;
+  is_active: boolean;
 }
 
 // --- SKELETON COMPONENT ---
@@ -50,32 +51,33 @@ const ProfileSkeleton = () => (
 
 // --- MAIN PAGE COMPONENT ---
 export default function MerchantProfilePage() {
-  const [profile, setProfile] = useState<Partial<ProfileData>>({});
+  const [profile, setProfile] = useState<Partial<ProfileData>>({ is_active: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/merchant/profile', { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed to load profile');
+      const data = await res.json();
+      setProfile(data);
+    } catch (err: any) {
+      setError('No se pudo cargar el perfil. Inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/merchant/profile', { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to load profile');
-        const data = await res.json();
-        setProfile(data);
-      } catch (err: any) {
-        setError('No se pudo cargar el perfil. Inténtalo de nuevo.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchProfile();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setProfile(prev => ({ ...prev, [name]: value }));
+    setProfile(prev => ({ ...prev, id: prev.id, [name]: value }));
   };
 
   const handleOpeningHoursChange = (day: string, field: 'open' | 'close', value: string) => {
@@ -84,13 +86,13 @@ export default function MerchantProfilePage() {
       const dayHours = openingHours[day];
 
       if (dayHours === null) {
-        return prev; // Day is closed, should not be editable
+        return prev;
       }
 
       const newDayHours = { ...(dayHours || { open: '', close: '' }), [field]: value };
       const newOpeningHours = { ...openingHours, [day]: newDayHours };
       
-      return { ...prev, opening_hours: newOpeningHours };
+      return { ...prev, id: prev.id, opening_hours: newOpeningHours };
     });
   };
 
@@ -105,37 +107,41 @@ export default function MerchantProfilePage() {
         newOpeningHours[day] = { open: '09:00', close: '17:00' };
       }
 
-      return { ...prev, opening_hours: newOpeningHours };
+      return { ...prev, id: prev.id, opening_hours: newOpeningHours };
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const saveProfile = async (profileData: Partial<ProfileData>) => {
     setSaving(true);
     setError(null);
     setSuccess(null);
     try {
-      const profileToSend = {
-        ...profile,
-        id: profile.id,
-        opening_hours: profile.opening_hours || {},
-      };
       const res = await fetch('/api/merchant/profile', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileToSend),
+        body: JSON.stringify(profileData),
       });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || 'Failed to save profile');
       }
       setSuccess('¡Perfil actualizado con éxito!');
+      fetchProfile(); // Refresh data from server
     } catch (err: any) {
-      setError('No se pudo guardar el perfil. Revisa los datos.');
+      setError(`No se pudo guardar el perfil: ${err.message}`);
     } finally {
       setSaving(false);
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await saveProfile(profile);
+  };
+
+  const handleToggleActive = async () => {
+    await saveProfile({ id: profile.id, is_active: !profile.is_active });
+  }
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -154,12 +160,10 @@ export default function MerchantProfilePage() {
         throw new Error(data.error || 'Logo upload failed');
       }
       const data = await res.json();
-      setProfile(prev => ({ ...prev, logo_url: `${data.logoUrl}?t=${new Date().getTime()}` }));
+      setProfile(prev => ({ ...prev, id: prev.id, logo_url: `${data.logoUrl}?t=${new Date().getTime()}` }));
       setSuccess('¡Logo actualizado con éxito!');
     } catch (err: any) {
       setError('No se pudo subir el logo. Inténtalo de nuevo.');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -180,7 +184,7 @@ export default function MerchantProfilePage() {
         throw new Error(data.error || 'Store image upload failed');
       }
       const data = await res.json();
-      setProfile(prev => ({ ...prev, store_image_url: `${data.imageUrl}?t=${new Date().getTime()}` }));
+      setProfile(prev => ({ ...prev, id: prev.id, store_image_url: `${data.imageUrl}?t=${new Date().getTime()}` }));
       setSuccess('¡Imagen de la tienda actualizada con éxito!');
     } catch (err: any) {
       setError('No se pudo subir la imagen. Inténtalo de nuevo.');
@@ -191,7 +195,17 @@ export default function MerchantProfilePage() {
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md">
-      <h1 className="text-2xl font-bold font-display mb-6">Perfil de la Tienda</h1>
+      <div className="flex justify-between items-start mb-6">
+        <h1 className="text-2xl font-bold font-display">Perfil de la Tienda</h1>
+        <div className="flex items-center gap-4">
+            <span className={`text-sm font-medium ${profile.is_active ? 'text-green-600' : 'text-red-600'}`}>
+                {profile.is_active ? 'Tienda Activa (Visible)' : 'Tienda Inactiva (Oculta)'}
+            </span>
+            <button onClick={handleToggleActive} disabled={saving} className={`px-4 py-2 text-white rounded-lg font-semibold disabled:opacity-50 ${profile.is_active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}>
+                {saving ? '...' : (profile.is_active ? 'Desactivar' : 'Activar')}
+            </button>
+        </div>
+      </div>
       
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Logo de la Tienda</h2>
@@ -222,7 +236,10 @@ export default function MerchantProfilePage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="hidden" name="id" value={profile.id || ''} />
+        <div>
+          <label htmlFor="name" className="text-sm font-medium text-gray-700">Nombre a Mostrar (de la tienda) <span className="text-red-500">*</span></label>
+          <input type="text" name="name" id="name" value={profile.name || ''} onChange={handleInputChange} required className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+        </div>
         <div>
           <label htmlFor="address_line" className="text-sm font-medium text-gray-700">Dirección <span className="text-red-500">*</span></label>
           <input type="text" name="address_line" id="address_line" value={profile.address_line || ''} onChange={handleInputChange} required className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />

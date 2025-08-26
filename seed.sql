@@ -1,6 +1,5 @@
--- The TRUNCATE statement has been removed to prevent data loss.
--- -- Clear existing data to ensure a clean seed
--- TRUNCATE TABLE cities, merchants, shops, bullion_skus, price_entries RESTART IDENTITY CASCADE;
+-- Clear existing data to ensure a clean seed
+TRUNCATE TABLE cities, merchants, shops, bullion_skus, price_entries RESTART IDENTITY CASCADE;
 
 INSERT INTO regions (id, country_code, name, slug) VALUES
 (1, 'ES', 'Andalucía', 'andalucia'),

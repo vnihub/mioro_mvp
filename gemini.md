@@ -13,6 +13,9 @@
 
 ### Session Summary (2025-08-26)
 
+- Implemented the full merchant registration and profile management feature, including a combined login/register page, backend logic for account creation, and a fully editable profile page with shop activation/deactivation capabilities.
+- Debugged and resolved a series of complex, persistent errors related to database seeding and session management that were preventing new user registration and profile updates.
+- Refactored the database seeding process to be more robust by programmatically resetting ID sequences, ensuring a clean and predictable state for development.
 - Fixed a critical bug that was preventing merchants from saving new bullion prices. The issue was traced to a mismatch between the application code and the actual database schema, which was resolved by implementing a more defensive `SELECT` then `INSERT`/`UPDATE` logic instead of relying on `ON CONFLICT`.
 - Fixed a data inconsistency issue where the merchant prices page was showing a confusing, flat list of prices from all of a merchant's shops. The API now groups prices by shop, and the frontend displays them in a clear, organized manner.
 - Addressed and fixed a bug where the merchant prices page was showing prices for multiple shops instead of just the primary one.

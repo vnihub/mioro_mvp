@@ -37,17 +37,26 @@ This file tracks the tasks for the Mioro MVP project.
 
 ## Future Tasks
 
-### Milestone 2: Core Functionality Enhancements
+### Milestone 2: Merchant Account Management
+
+- [x] Combine Login and Register pages into a single, user-friendly flow. (2025-08-26)
+- [x] Reorder merchant dashboard navigation to place "Perfil" before "Precios". (2025-08-26)
+- [x] Create a new merchant registration API endpoint (`/api/auth/register`). (2025-08-26)
+- [x] Implement logic to create new merchant, user, and an inactive shop upon registration. (2025-08-26)
+- [x] Develop the frontend for the merchant profile page to allow editing of all shop details. (2025-08-26)
+- [x] Implement the backend (`PUT /api/merchant/profile`) to handle profile updates. (2025-08-26)
+- [x] Add a shop activation/deactivation toggle on the profile page to control public visibility. (2025-08-26)
+
+### Milestone 3: Core Functionality Enhancements
 
 - [ ] Implement email deliverability verification.
 
-### Milestone 3: New Features
+### Milestone 4: New Features
 
 - [ ] Implement localization (Country & Language Switching).
 - [ ] Develop an admin dashboard for content moderation.
-- [ ] Allow public users to register, save favorite shops, receive notifications, etc.
 
-### Milestone 4: AI-Powered Features
+### Milestone 5: AI-Powered Features
 
 - [ ] Implement the AI Valuator ("Your Pocket Gemologist").
 - [ ] Implement the Market Forecaster ("Intelligent Pricing & Timing").

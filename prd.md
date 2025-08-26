@@ -18,9 +18,14 @@ Mioro is a web application that connects individuals looking to sell precious me
 
 ### 2.2. Merchant User
 
-- As a merchant user, I want to be able to create an account and log in to a merchant dashboard.
-- As a merchant user, I want to be able to manage my shop's profile, including my address, phone number, and other contact information.
-- As a merchant user, I want to be able to manage my shop's prices for scrap metals and bullion products.
+- As a new merchant, I want to be able to register for an account using my email and password.
+- As a merchant, I want a combined Login/Register page for easy access.
+- As a merchant, upon registration, I want an empty shop profile to be created for me automatically, but kept inactive (invisible to the public).
+- As a logged-in merchant, I want to be redirected to my profile page, which should be the main hub for managing my shop.
+- As a merchant, I want to be able to edit all my shop's details from my profile page, including its name, address, contact info, and description.
+- As a merchant, I want to have a clear and simple way to activate or deactivate my shop's visibility in public search results (e.g., for vacations).
+- As a merchant, I want the navigation in my dashboard to be logically ordered, with "Perfil" (Profile) appearing before "Precios" (Prices).
+- As a merchant, I want to be able to manage my shop's prices for scrap and bullion products on a separate page.
 
 ## 3. Technical Requirements
 

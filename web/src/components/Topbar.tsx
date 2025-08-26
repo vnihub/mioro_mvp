@@ -18,7 +18,7 @@ export default function Topbar() {
             </Link>
           </div>
           <div className="flex items-center">
-            <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900">
+            <Link href="/acceso" className="text-sm font-medium text-gray-700 hover:text-gray-900">
               Acceso Comerciantes
             </Link>
           </div>
