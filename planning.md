@@ -51,7 +51,10 @@ To support international expansion, the application will be architected to handl
 - **Country Selection:** This will be the primary data filter. Selecting a country will determine which shops, regions, and cities are displayed.
 - **Language Selection:** This will control the UI language. A user can be browsing shops in India, for example, but have the UI displayed in English or Spanish.
 
-### Implementation Phases
+### Intelligent Language Handling
 
-1.  **Phase 1: Foundational Multilingual Support:** The first step is to make the existing single-country application bilingual (Spanish and English) using the `next-intl` library. This involves creating translation files (`/messages/en.json`) and updating the middleware to handle URL-based language switching (e.g., `/en/` and `/es/`).
-2.  **Phase 2: Country Scoping:** Once the app is multilingual, we will introduce a country selector. All data-fetching APIs will be updated to filter content based on the selected country. This will require ensuring all relevant database tables (e.g., `regions`, `shops`) have a `country_code` column.
+To provide a superior user experience, the localization will include the following intelligent features:
+
+- **Persistence:** The user's country and language selections will be saved locally in their browser (e.g., using `localStorage`). On subsequent visits, the application will automatically apply their last-used settings, providing a seamless experience.
+- **Context-Aware Language Switching:** The list of available languages will be dynamically prioritized based on the selected country. For example, selecting "Spain" will show Spanish and other regional languages first, while selecting "India" will prioritize English and Hindi.
+- **Guaranteed English Fallback:** English will always be available as a language option, regardless of the selected country. In non-English speaking countries, it will appear at the end of the prioritized list, serving as a universal fallback.
