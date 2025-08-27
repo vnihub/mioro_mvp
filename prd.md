@@ -36,8 +36,22 @@ Mioro is a web application that connects individuals looking to sell precious me
 - The application must provide secure authentication for merchant users.
 - The application must handle image uploads for shop logos and store images.
 
-## 4. Success Metrics
+## 5. Go-to-Market Strategy
 
-- The number of public users using the calculator.
-- The number of merchant users registered on the platform.
-- The number of leads generated for merchants.
+### 5.1. Pre-Launch Phase
+
+- **Objective:** Build a list of interested merchants and populate the platform with initial shops and prices before the public launch.
+- **Key Actions:**
+    - Develop a "Coming Soon" landing page with a clear value proposition and an email signup form for merchants.
+    - Offer incentives for early sign-ups (e.g., "Founding Member" badge, premium placement).
+    - Conduct direct outreach to a curated list of precious metal buyers in key cities.
+    - Grant exclusive early access to a small group of "Founding Member" shops to gather feedback and ensure the platform is populated on day one.
+
+### 5.2. Launch Day & Post-Launch
+
+- **Objective:** Drive both merchant and public user adoption.
+- **Key Actions:**
+    - Announce the public launch via an email blast to all pre-registered merchants.
+    - Switch the homepage from the "Coming Soon" page to the full application.
+    - Begin targeted online marketing campaigns (e.g., Google/Facebook Ads).
+    - Conduct PR outreach to local news and financial bloggers.

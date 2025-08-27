@@ -49,16 +49,27 @@ export async function GET(request: Request) {
 // PUT handler to update profile data
 export async function PUT(request: Request) {
   const session = await getSession();
+  console.log('Session data in PUT handler:', session);
   if (!session.merchant_id || !session.shop_id) {
     return NextResponse.json({ error: 'No autenticado o ID de tienda no encontrado en la sesión' }, { status: 401 });
   }
 
   const client = await pool.connect();
   try {
-    const { name, address_line, phone, whatsapp, description, opening_hours, is_active } = await request.json();
+    const incomingData = await request.json();
     const shopId = session.shop_id;
 
     await client.query('BEGIN');
+
+    // Verify that the shop belongs to the logged-in merchant and get existing data
+    const shopCheck = await client.query('SELECT * FROM shops WHERE id = $1 AND merchant_id = $2', [shopId, session.merchant_id]);
+    if (shopCheck.rows.length === 0) {
+      throw new Error('No tienes permiso para editar este perfil o la tienda no existe.');
+    }
+    const existingData = shopCheck.rows[0];
+
+    // Merge existing data with incoming data
+    const dataToSave = { ...existingData, ...incomingData };
 
     // Update shops table
     const shopQuery = `
@@ -74,20 +85,20 @@ export async function PUT(request: Request) {
       WHERE id = $8 AND merchant_id = $9
     `;
     await client.query(shopQuery, [
-      name,
-      address_line,
-      phone,
-      whatsapp,
-      description,
-      opening_hours,
-      is_active,
+      dataToSave.name,
+      dataToSave.address_line,
+      dataToSave.phone,
+      dataToSave.whatsapp,
+      dataToSave.description,
+      dataToSave.opening_hours,
+      dataToSave.is_active,
       shopId,
       session.merchant_id
     ]);
 
     // Update merchants table
     const merchantQuery = `UPDATE merchants SET display_name = $1, contact_phone = $2 WHERE id = $3`;
-    await client.query(merchantQuery, [name, phone, session.merchant_id]);
+    await client.query(merchantQuery, [dataToSave.name, dataToSave.phone, session.merchant_id]);
 
     await client.query('COMMIT');
 

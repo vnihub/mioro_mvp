@@ -31,6 +31,16 @@ The application is a full-stack web application built with Next.js.
 
 For deployment, Vercel is the recommended platform due to its seamless integration with Next.js. A production-ready PostgreSQL database (e.g., Vercel Postgres) would be required.
 
-## 6. Future Development
+## 7. Launch Plan
 
-For a detailed list of future development items, please refer to the `tasks.md` file in the project root.
+To address the "chicken and egg" problem of needing shops to attract users and users to attract shops, we will adopt a phased launch strategy.
+
+- **Phase 1: Pre-Launch (Merchant Acquisition):**
+    - A "Coming Soon" landing page will be deployed to capture interest from merchants.
+    - Direct outreach will be conducted to a targeted list of shops.
+    - A small group of "Founding Members" will be granted early access to populate the platform with their pricing information.
+
+- **Phase 2: Public Launch:**
+    - The full application will be made public.
+    - An email announcement will be sent to all pre-registered merchants.
+    - Targeted marketing and PR efforts will begin to attract public users.

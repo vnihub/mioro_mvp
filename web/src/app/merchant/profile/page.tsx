@@ -140,7 +140,7 @@ export default function MerchantProfilePage() {
   };
 
   const handleToggleActive = async () => {
-    await saveProfile({ id: profile.id, is_active: !profile.is_active });
+    await saveProfile({ ...profile, is_active: !profile.is_active });
   }
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
