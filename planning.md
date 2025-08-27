@@ -51,6 +51,14 @@ To support international expansion, the application will be architected to handl
 - **Country Selection:** This will be the primary data filter. Selecting a country will determine which shops, regions, and cities are displayed.
 - **Language Selection:** This will control the UI language. A user can be browsing shops in India, for example, but have the UI displayed in English or Spanish.
 
+### Country Selection Flow (The "Country Gate")
+
+To handle users from different regions gracefully, the application will implement a "Country Gate" flow:
+
+1.  **Automatic Detection:** On a user's first visit, their country will be detected via their IP address. If the country is supported, it will be set automatically, and the user will see the relevant content seamlessly.
+2.  **Manual Selection as a Fallback:** If the user's country cannot be detected or is not yet supported, they will be redirected to a dedicated "Country Selection" page. This page will feature a clear list of supported countries and will not be an intrusive pop-up.
+3.  **Lead Capture:** The "Country Gate" page will also include an email capture form for users from unsupported countries, allowing us to notify them when the service expands to their region.
+
 ### UI/UX Design Principles for Localization
 
 To avoid user confusion, the UI will adhere to the following design principles:
