@@ -20,12 +20,20 @@ Mioro is a web application that connects individuals looking to sell precious me
 
 - As a new merchant, I want to be able to register for an account using my email and password.
 - As a merchant, I want a combined Login/Register page for easy access.
+- As a merchant who has forgotten their password, I want to be able to request a password reset link to be sent to my registered email address.
+- As a merchant, after requesting a password reset, I want to receive an email with a secure, time-sensitive link to a page where I can set a new password.
+- As a merchant, I want to be able to securely set a new password for my account.
 - As a merchant, upon registration, I want an empty shop profile to be created for me automatically, but kept inactive (invisible to the public).
 - As a logged-in merchant, I want to be redirected to my profile page, which should be the main hub for managing my shop.
 - As a merchant, I want to be able to edit all my shop's details from my profile page, including its name, address, contact info, and description.
 - As a merchant, I want to have a clear and simple way to activate or deactivate my shop's visibility in public search results (e.g., for vacations).
 - As a merchant, I want the navigation in my dashboard to be logically ordered, with "Perfil" (Profile) appearing before "Precios" (Prices).
 - As a merchant, I want to be able to manage my shop's prices for scrap and bullion products on a separate page.
+
+### 2.3. International User
+
+- As an international user, I want to be able to select my country from a list of supported countries to see relevant shops and regions.
+- As a user in a multilingual country (e.g., India, China), I want to be able to switch the language of the user interface independently of the country I have selected.
 
 ## 3. Technical Requirements
 

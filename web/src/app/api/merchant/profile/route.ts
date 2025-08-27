@@ -49,7 +49,6 @@ export async function GET(request: Request) {
 // PUT handler to update profile data
 export async function PUT(request: Request) {
   const session = await getSession();
-  console.log('Session data in PUT handler:', session);
   if (!session.merchant_id || !session.shop_id) {
     return NextResponse.json({ error: 'No autenticado o ID de tienda no encontrado en la sesión' }, { status: 401 });
   }
@@ -70,6 +69,11 @@ export async function PUT(request: Request) {
 
     // Merge existing data with incoming data
     const dataToSave = { ...existingData, ...incomingData };
+
+    // More specific validation
+    if (!dataToSave.name) return NextResponse.json({ error: 'El nombre de la tienda es obligatorio.' }, { status: 400 });
+    if (!dataToSave.address_line) return NextResponse.json({ error: 'La dirección es obligatoria.' }, { status: 400 });
+    if (!dataToSave.phone) return NextResponse.json({ error: 'El número de teléfono es obligatorio.' }, { status: 400 });
 
     // Update shops table
     const shopQuery = `

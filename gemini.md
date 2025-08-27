@@ -2,6 +2,7 @@
 
 ## Core Instructions
 
+- **The Stability Mandate: Do Not Break Existing Features.** When implementing new functionality, your highest priority is to ensure that all existing, working features remain fully operational. All changes must be implemented in a way that is isolated and minimizes side effects. Before committing any change, you must mentally (or actually) test that the core functionality of the application is not broken.
 - **Always read `planning.md` at the start of every new conversation.** This will ensure you have the latest information about the project's architecture, tech stack, and overall vision.
 - **Check `tasks.md` before starting your work.** This file contains the list of tasks to be done. You should always know what the next task is.
 - **Mark completed tasks immediately.** When you finish a task, mark it as done in `tasks.md` with the completion date.

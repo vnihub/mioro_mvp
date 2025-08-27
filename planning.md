@@ -31,20 +31,27 @@ The application is a full-stack web application built with Next.js.
 
 For deployment, Vercel is the recommended platform due to its seamless integration with Next.js. A production-ready PostgreSQL database (e.g., Vercel Postgres) would be required.
 
+### 5.1. Development & Deployment Workflow
+
+To ensure the stability of the live application, we will adopt a Git Flow branching strategy. This workflow isolates development from production, protecting live user data and providing a clear path for testing and releasing new features.
+
+- **`main` Branch (Production):** This branch contains the live, stable code. It is only updated by merging from `release` or `hotfix` branches. The live application is deployed from here.
+- **`develop` Branch (Staging):** This is the primary development branch. All new feature branches are merged into `develop`. This branch will be deployed to a separate staging environment, connected to a test database, for thorough testing before release.
+- **Feature Branches:** All new features are built on their own branches (e.g., `feature/new-feature`). This keeps development isolated and organized.
+- **Reverting:** If a production release causes issues, we can safely revert the changes on the `main` branch using `git revert`.
+
 ## 6. Security
 
 A detailed security plan outlining our commitment to protecting user data and ensuring platform integrity is documented in the `SECURITY.md` file.
 
-## 7. Launch Plan
+## 8. Localization Strategy
 
-To address the "chicken and egg" problem of needing shops to attract users and users to attract shops, we will adopt a phased launch strategy.
+To support international expansion, the application will be architected to handle multiple countries and languages. The core principle is the separation of country and language.
 
-- **Phase 1: Pre-Launch (Merchant Acquisition):**
-    - A "Coming Soon" landing page will be deployed to capture interest from merchants.
-    - Direct outreach will be conducted to a targeted list of shops.
-    - A small group of "Founding Members" will be granted early access to populate the platform with their pricing information.
+- **Country Selection:** This will be the primary data filter. Selecting a country will determine which shops, regions, and cities are displayed.
+- **Language Selection:** This will control the UI language. A user can be browsing shops in India, for example, but have the UI displayed in English or Spanish.
 
-- **Phase 2: Public Launch:**
-    - The full application will be made public.
-    - An email announcement will be sent to all pre-registered merchants.
-    - Targeted marketing and PR efforts will begin to attract public users.
+### Implementation Phases
+
+1.  **Phase 1: Foundational Multilingual Support:** The first step is to make the existing single-country application bilingual (Spanish and English) using the `next-intl` library. This involves creating translation files (`/messages/en.json`) and updating the middleware to handle URL-based language switching (e.g., `/en/` and `/es/`).
+2.  **Phase 2: Country Scoping:** Once the app is multilingual, we will introduce a country selector. All data-fetching APIs will be updated to filter content based on the selected country. This will require ensuring all relevant database tables (e.g., `regions`, `shops`) have a `country_code` column.

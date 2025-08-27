@@ -49,7 +49,9 @@ This file tracks the tasks for the Mioro MVP project.
 
 ### Milestone 3: Core Functionality Enhancements
 
+- [x] Refine UI/UX and error handling for a professional beta launch. (2025-08-26)
 - [ ] Implement email deliverability verification.
+- [ ] Implement password recovery flow for merchants.
 
 ### Milestone 4: New Features
 

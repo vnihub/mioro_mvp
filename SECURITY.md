@@ -6,7 +6,8 @@ This document outlines the security considerations and best practices for the Mi
 
 - **Password Hashing:** All merchant passwords are required to be hashed using `bcrypt`, a strong, adaptive hashing algorithm. Plain-text passwords are never stored.
 - **Session Encryption:** We use `iron-session` to manage user sessions. Session data is encrypted and stored in a client-side cookie. The encryption key (`SESSION_SECRET`) is a high-entropy secret stored securely in an environment variable and is not exposed to the frontend.
-- **Brute-force Protection:** (Future) Implement rate limiting on login and registration endpoints to mitigate brute-force and credential stuffing attacks.
+- **Password Recovery:** The password recovery mechanism will use secure, single-use, time-sensitive tokens. These tokens will be sent to the user's registered email address and will expire after a short period (e.g., 1 hour) to minimize the risk of misuse. Once a token is used, it will be invalidated.
+- **Brute-force Protection:** (Future) Implement rate limiting on login, registration, and password reset endpoints to mitigate brute-force and credential stuffing attacks.
 
 ## 2. Authorization & Access Control
 
