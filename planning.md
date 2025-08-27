@@ -51,6 +51,13 @@ To support international expansion, the application will be architected to handl
 - **Country Selection:** This will be the primary data filter. Selecting a country will determine which shops, regions, and cities are displayed.
 - **Language Selection:** This will control the UI language. A user can be browsing shops in India, for example, but have the UI displayed in English or Spanish.
 
+### UI/UX Design Principles for Localization
+
+To avoid user confusion, the UI will adhere to the following design principles:
+
+- **Flags for Countries Only:** Flags will be used exclusively to represent countries in the country selector.
+- **Text for Languages:** The language selector will be text-based and will not use flags. The name of each language will be displayed in its own language (e.g., "Español", "English", "Català") to ensure clarity for all users.
+
 ### Intelligent Language Handling
 
 To provide a superior user experience, the localization will include the following intelligent features:
