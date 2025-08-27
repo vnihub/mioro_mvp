@@ -31,6 +31,10 @@ The application is a full-stack web application built with Next.js.
 
 For deployment, Vercel is the recommended platform due to its seamless integration with Next.js. A production-ready PostgreSQL database (e.g., Vercel Postgres) would be required.
 
+## 6. Security
+
+A detailed security plan outlining our commitment to protecting user data and ensuring platform integrity is documented in the `SECURITY.md` file.
+
 ## 7. Launch Plan
 
 To address the "chicken and egg" problem of needing shops to attract users and users to attract shops, we will adopt a phased launch strategy.
