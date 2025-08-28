@@ -37,12 +37,27 @@ export async function POST(request: Request) {
     const merchantId = merchantResult.rows[0].id;
 
     // --- Create Shop (inactive by default) ---
-    // For now, we create a placeholder address. The merchant must update it.
     const shopResult = await client.query(
       'INSERT INTO shops (merchant_id, city_id, name, address_line, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING id',
       [merchantId, 1, display_name, 'Dirección pendiente', false] // Default to Madrid (city_id 1)
     );
     const shopId = shopResult.rows[0].id;
+
+    // --- Create Default Scrap Prices ---
+    const defaultScrapPrices = [
+      { metal_code: 'gold', purity_id: 4, price: 0 }, // 18K
+      { metal_code: 'gold', purity_id: 7, price: 0 }, // 24K
+      { metal_code: 'silver', purity_id: 11, price: 0 }, // 925
+      { metal_code: 'platinum', purity_id: 14, price: 0 }, // 950
+    ];
+
+    for (const p of defaultScrapPrices) {
+      await client.query(
+        `INSERT INTO price_entries (shop_id, metal_code, purity_id, context, side, unit, price)
+         VALUES ($1, $2, $3, 'scrap', 'buy', 'per_gram', $4)`,
+        [shopId, p.metal_code, p.purity_id, p.price]
+      );
+    }
 
     // --- Create Merchant User ---
     const hashedPassword = await bcrypt.hash(password, 10);

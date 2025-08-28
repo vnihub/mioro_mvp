@@ -62,7 +62,7 @@ const ShopPage: NextPage<{ params: { id: string } }> = async ({ params }) => {
                   <tr key={index}>
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{item.metal}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{item.purity}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right font-semibold">{item.price_eur.toFixed(2)} €</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right font-semibold">{item.price.toFixed(2)} €</td>
                   </tr>
                 ))}
               </tbody>

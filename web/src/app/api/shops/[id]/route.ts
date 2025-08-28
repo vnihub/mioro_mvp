@@ -29,7 +29,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         pe.context, 
         pe.side, 
         pe.unit, 
-        pe.price_eur,
+        pe.price,
         bs.id AS bullion_sku_id,
         bs.product_name AS sku
       FROM price_entries pe
@@ -44,7 +44,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     // Separate prices into scrap and bullion
     const scrapPrices = pricesResult.rows
       .filter(p => p.context === 'scrap')
-      .map(p => ({...p, price_eur: p.price_eur ? parseFloat(p.price_eur) : 0}));
+      .map(p => ({...p, price: p.price ? parseFloat(p.price) : 0}));
 
     const bullionPricesRaw = pricesResult.rows
       .filter(p => p.context === 'bullion');
@@ -57,9 +57,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
         acc.push(group);
       }
       if (price.side === 'buy') {
-        group.buy = price.price_eur ? parseFloat(price.price_eur) : 0;
+        group.buy = price.price ? parseFloat(price.price) : 0;
       } else if (price.side === 'sell') {
-        group.sell = price.price_eur ? parseFloat(price.price_eur) : 0;
+        group.sell = price.price ? parseFloat(price.price) : 0;
       }
       return acc;
     }, []);

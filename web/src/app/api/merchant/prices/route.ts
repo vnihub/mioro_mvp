@@ -32,7 +32,7 @@ export async function GET(request: Request) {
         pe.context, 
         pe.side, 
         pe.unit, 
-        pe.price_eur,
+        pe.price,
         bs.id AS bullion_sku_id,
         bs.product_name AS sku
       FROM price_entries pe
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       ORDER BY pe.context, m.display_name, p.fineness_ppm DESC, bs.product_name;
     `;
     const { rows } = await pool.query(query, [shopId]);
-    const prices = rows.map(p => ({...p, price_eur: parseFloat(p.price_eur)}));
+    const prices = rows.map(p => ({...p, price: parseFloat(p.price)}));
     return NextResponse.json(prices);
   } catch (error) {
     console.error('Error fetching merchant prices:', error);
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
   const client = await pool.connect();
   try {
-    const pricesToUpdate: { id: number | string; price_eur: number; side?: 'buy' | 'sell', is_new?: boolean, is_deleted?: boolean, bullion_sku_id?: number, metal_code?: string, context?: 'scrap' | 'bullion' }[] = await request.json();
+    const pricesToUpdate: { id: number | string; price: number; side?: 'buy' | 'sell', is_new?: boolean, is_deleted?: boolean, bullion_sku_id?: number, metal_code?: string, context?: 'scrap' | 'bullion' }[] = await request.json();
     if (!Array.isArray(pricesToUpdate)) {
       return NextResponse.json({ error: 'Payload inválido' }, { status: 400 });
     }
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
     for (const price of pricesToUpdate) {
       if (price.context === 'scrap') {
         // Update scrap prices
-        const updateQuery = `UPDATE price_entries SET price_eur = $1 WHERE id = $2 AND shop_id = $3`;
-        await client.query(updateQuery, [price.price_eur, price.id, shopId]);
+        const updateQuery = `UPDATE price_entries SET price = $1 WHERE id = $2 AND shop_id = $3`;
+        await client.query(updateQuery, [price.price, price.id, shopId]);
       } else if (price.context === 'bullion') {
         if (price.is_deleted) {
           // Delete existing bullion price entries
@@ -93,21 +93,21 @@ export async function POST(request: Request) {
 
             if (existingEntry.rows.length > 0) {
               // Entry exists, so we update it
-              const updateQuery = `UPDATE price_entries SET price_eur = $1 WHERE id = $2`;
-              await client.query(updateQuery, [price.price_eur || 0, existingEntry.rows[0].id]);
+              const updateQuery = `UPDATE price_entries SET price = $1 WHERE id = $2`;
+              await client.query(updateQuery, [price.price || 0, existingEntry.rows[0].id]);
             } else {
               // Entry does not exist, so we insert it
               await client.query(
-                `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price_eur)
+                `INSERT INTO price_entries (shop_id, metal_code, bullion_sku_id, context, side, unit, price)
                  VALUES ($1, $2, $3, 'bullion', $4, 'per_item', $5)`,
-                [shopId, price.metal_code, price.bullion_sku_id, price.side, price.price_eur || 0]
+                [shopId, price.metal_code, price.bullion_sku_id, price.side, price.price || 0]
               );
             }
           }
         } else {
           // Update existing bullion price entry
-          const updateQuery = `UPDATE price_entries SET price_eur = $1 WHERE id = $2 AND shop_id = $3`;
-          await client.query(updateQuery, [price.price_eur, price.id, shopId]);
+          const updateQuery = `UPDATE price_entries SET price = $1 WHERE id = $2 AND shop_id = $3`;
+          await client.query(updateQuery, [price.price, price.id, shopId]);
         }
       }
     }

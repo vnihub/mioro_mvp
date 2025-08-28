@@ -12,7 +12,7 @@ interface Price {
   sku?: string;
   context: 'scrap' | 'bullion';
   side: 'buy' | 'sell';
-  price_eur: number;
+  price: number;
   bullion_sku_id?: number;
   is_new?: boolean;
   is_deleted?: boolean;
@@ -100,14 +100,14 @@ export default function MerchantPricesPage() {
   const handlePriceChange = (id: number | string, newPrice: string, side: 'buy' | 'sell') => {
     setPrices(currentPrices =>
       currentPrices.map(p =>
-        p.id === id && p.side === side ? { ...p, price_eur: parseFloat(newPrice) || 0 } : p
+        p.id === id && p.side === side ? { ...p, price: parseFloat(newPrice) || 0 } : p
       )
     );
   };
 
   const handleAddBullion = (sku: BullionSku) => {
-    const newBuyPrice: Price = { id: `new-${sku.id}-buy`, metal: '', context: 'bullion', side: 'buy', price_eur: 0, bullion_sku_id: sku.id, metal_code: sku.metal_code, is_new: true, sku: sku.product_name };
-    const newSellPrice: Price = { id: `new-${sku.id}-sell`, metal: '', context: 'bullion', side: 'sell', price_eur: 0, bullion_sku_id: sku.id, metal_code: sku.metal_code, is_new: true, sku: sku.product_name };
+    const newBuyPrice: Price = { id: `new-${sku.id}-buy`, metal: '', context: 'bullion', side: 'buy', price: 0, bullion_sku_id: sku.id, metal_code: sku.metal_code, is_new: true, sku: sku.product_name };
+    const newSellPrice: Price = { id: `new-${sku.id}-sell`, metal: '', context: 'bullion', side: 'sell', price: 0, bullion_sku_id: sku.id, metal_code: sku.metal_code, is_new: true, sku: sku.product_name };
     setPrices(current => [...current, newBuyPrice, newSellPrice]);
   };
 
@@ -148,46 +148,46 @@ export default function MerchantPricesPage() {
           </button>
         </div>
 
-        {prices.length === 0 ? (
+        {prices.length === 0 && (
           <div className="text-center bg-white p-8 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-2">Bienvenido a tu panel de precios</h2>
             <p className="text-gray-600">Aún no has añadido ningún precio.</p>
             <p className="text-gray-600 mt-1">Empieza por añadir productos de bullion para que los clientes puedan ver tus tarifas.</p>
           </div>
-        ) : (
-          <div className="flex flex-col gap-8">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Chatarra</h2>
-              <div className="overflow-x-auto bg-white rounded-lg shadow">
-                <table className="min-w-full">
-                  <thead className="bg-gray-50"><tr><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metal</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pureza</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compra €/g</th></tr></thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {scrapPrices.map(item => (<tr key={item.id}><td className="px-4 py-3 text-sm font-medium text-gray-900">{item.metal}</td><td className="px-4 py-3 text-sm text-gray-500">{item.purity}</td><td className="px-4 py-3"><input type="number" value={item.price_eur} onChange={e => handlePriceChange(item.id, e.target.value, 'buy')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td></tr>))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Bullion y Monedas</h2>
-              <div className="overflow-x-auto bg-white rounded-t-lg shadow">
-                <table className="min-w-full">
-                  <thead className="bg-gray-50"><tr><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compra €/ud</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venta €/ud</th><th className="w-12 px-4 py-3"></th></tr></thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {bullionPriceGroups.map(([skuId, group]) => (
-                      <tr key={skuId}>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{group.sku}</td>
-                        <td className="px-4 py-3"><input type="number" value={group.buy?.price_eur ?? ''} onChange={e => handlePriceChange(group.buy!.id, e.target.value, 'buy')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td>
-                        <td className="px-4 py-3"><input type="number" value={group.sell?.price_eur ?? ''} onChange={e => handlePriceChange(group.sell!.id, e.target.value, 'sell')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td>
-                        <td className="px-4 py-3"><button onClick={() => handleRemoveBullion(parseInt(skuId))} className="text-red-500 hover:text-red-700 font-bold">X</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <AddBullionControl onAdd={handleAddBullion} existingSkuIds={bullionPriceGroups.map(([skuId, _]) => parseInt(skuId))} />
+        )}
+
+        <div className="flex flex-col gap-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Chatarra</h2>
+            <div className="overflow-x-auto bg-white rounded-lg shadow">
+              <table className="min-w-full">
+                <thead className="bg-gray-50"><tr><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metal</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pureza</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compra €/g</th></tr></thead>
+                <tbody className="divide-y divide-gray-200">
+                  {scrapPrices.map(item => (<tr key={item.id}><td className="px-4 py-3 text-sm font-medium text-gray-900">{item.metal}</td><td className="px-4 py-3 text-sm text-gray-500">{item.purity}</td><td className="px-4 py-3"><input type="number" value={item.price} onChange={e => handlePriceChange(item.id, e.target.value, 'buy')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td></tr>))}
+                </tbody>
+              </table>
             </div>
           </div>
-        )}
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Bullion y Monedas</h2>
+            <div className="overflow-x-auto bg-white rounded-t-lg shadow">
+              <table className="min-w-full">
+                <thead className="bg-gray-50"><tr><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compra €/ud</th><th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venta €/ud</th><th className="w-12 px-4 py-3"></th></tr></thead>
+                <tbody className="divide-y divide-gray-200">
+                  {bullionPriceGroups.map(([skuId, group]) => (
+                    <tr key={skuId}>
+                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{group.sku}</td>
+                      <td className="px-4 py-3"><input type="number" value={group.buy?.price ?? ''} onChange={e => handlePriceChange(group.buy!.id, e.target.value, 'buy')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td>
+                      <td className="px-4 py-3"><input type="number" value={group.sell?.price ?? ''} onChange={e => handlePriceChange(group.sell!.id, e.target.value, 'sell')} className="w-28 rounded-lg border border-gray-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" /></td>
+                      <td className="px-4 py-3"><button onClick={() => handleRemoveBullion(parseInt(skuId))} className="text-red-500 hover:text-red-700 font-bold">X</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <AddBullionControl onAdd={handleAddBullion} existingSkuIds={bullionPriceGroups.map(([skuId, _]) => parseInt(skuId))} />
+          </div>
+        </div>
       </div>
     </>
   );

@@ -16,7 +16,7 @@ interface Price {
   metal_code: string;
   purity_id: number | null;
   bullion_sku_id: number | null;
-  price_eur: number;
+  price: number;
 }
 interface Shop {
   id: string;
@@ -29,7 +29,7 @@ interface SearchResult {
   shop_id: string;
   shop_name: string;
   logo_url: string | null;
-  estimated_payout_eur: number;
+  estimated_payout: number;
   last_price_update_at: string;
 }
 
@@ -127,7 +127,7 @@ export default function Home() {
     let sorted = [...results];
     sorted.sort((a, b) => {
       if (sortBy === 'payout') {
-        return b.estimated_payout_eur - a.estimated_payout_eur;
+        return b.estimated_payout - a.estimated_payout;
       } else if (sortBy === 'name') {
         return a.shop_name.localeCompare(b.shop_name);
       } else if (sortBy === 'updated') {
@@ -157,19 +157,22 @@ export default function Home() {
         const err = await response.json();
         throw new Error(err.error || 'Error al cargar los resultados');
       }
+
       const shops: Shop[] = await response.json();
 
       const calculatedResults = shops.map(shop => {
-        let estimated_payout_eur = 0;
-        if (searchType === 'scrap') {
-          const price = shop.prices.find(p => p.metal_code === metal && p.purity_id === parseInt(purity));
-          if (price) {
-            estimated_payout_eur = price.price_eur * parseFloat(weight);
-          }
-        } else {
-          const price = shop.prices.find(p => p.bullion_sku_id === parseInt(bullionSkuId));
-          if (price) {
-            estimated_payout_eur = price.price_eur * parseFloat(weight);
+        let estimated_payout = 0;
+        if (shop.prices) {
+          if (searchType === 'scrap') {
+            const price = shop.prices.find(p => p.metal_code === metal && p.purity_id === parseInt(purity));
+            if (price) {
+              estimated_payout = price.price * parseFloat(weight);
+            }
+          } else {
+            const price = shop.prices.find(p => p.bullion_sku_id === parseInt(bullionSkuId));
+            if (price) {
+              estimated_payout = price.price * parseFloat(weight);
+            }
           }
         }
         return {
@@ -177,9 +180,9 @@ export default function Home() {
           shop_name: shop.name,
           logo_url: shop.logo_url,
           last_price_update_at: shop.last_price_update_at,
-          estimated_payout_eur,
+          estimated_payout: estimated_payout,
         };
-      }).filter(r => r.estimated_payout_eur > 0);
+      }).filter(r => r.estimated_payout > 0);
 
       setResults(calculatedResults);
     } catch (err: any) {
@@ -323,7 +326,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-green-600">{shop.estimated_payout_eur.toFixed(2)} €</p>
+                    <p className="text-lg font-bold text-green-600">{shop.estimated_payout.toFixed(2)} €</p>
                     <p className="text-xs text-gray-500">Estimación</p>
                   </div>
                 </div>

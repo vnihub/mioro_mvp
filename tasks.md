@@ -35,8 +35,6 @@ This file tracks the tasks for the Mioro MVP project.
 - [x] Fix bullion price discrepancy and duplication on shop page. (2025-08-26)
 - [x] Fix critical bug preventing new bullion prices from being saved. (2025-08-26)
 
-## Future Tasks
-
 ### Milestone 2: Merchant Account Management
 
 - [x] Combine Login and Register pages into a single, user-friendly flow. (2025-08-26)
@@ -47,9 +45,16 @@ This file tracks the tasks for the Mioro MVP project.
 - [x] Implement the backend (`PUT /api/merchant/profile`) to handle profile updates. (2025-08-26)
 - [x] Add a shop activation/deactivation toggle on the profile page to control public visibility. (2025-08-26)
 
+## Recent Fixes (2025-08-27)
+- [x] Fix API: Update price_eur to price in /api/cities/[city_id]/shops. (2025-08-27)
+- [x] Fix API: Update price_eur to price in /api/shops/[id]. (2025-08-27)
+- [x] Fix Frontend: Update price_eur to price in src/app/shop/[id]/page.tsx. (2025-08-27)
+- [x] Fix Frontend: Restore and fix main page search functionality. (2025-08-27)
+
+## Future Tasks
+
 ### Milestone 3: Core Functionality Enhancements
 
-- [x] Refine UI/UX and error handling for a professional beta launch. (2025-08-26)
 - [ ] Implement email deliverability verification.
 - [ ] Implement password recovery flow for merchants.
 
@@ -63,3 +68,9 @@ This file tracks the tasks for the Mioro MVP project.
 - [ ] Implement the AI Valuator ("Your Pocket Gemologist").
 - [ ] Implement the Market Forecaster ("Intelligent Pricing & Timing").
 - [ ] Implement the Trust & Matchmaking Engine.
+
+### Milestone 6: Location Management
+
+- [ ] Enhance merchant profile page to allow setting/changing the shop's region and city.
+- [ ] Modify the city dropdown on the home page to only show cities that have active shops.
+- [ ] Create a script to pre-populate the `cities` table with a comprehensive list of cities for Spain using a public dataset.
